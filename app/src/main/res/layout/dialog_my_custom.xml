@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="540dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/heading"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:gravity="center"
+            android:text="활용 가능 시간"
+            android:textColor="#000"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/heading2"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="90dp"
+            android:gravity="center"
+            android:textColor="#000"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/questionBox"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="157dp"
+            android:background="@null"
+            android:gravity="center"
+            android:text="장시간 움직임이 없으시네요. \n 어떤 활동을 하고 계셨나요?"
+            android:textColor="#000"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/action_ok"
+            android:layout_width="80dp"
+            android:layout_height="45dp"
+            android:layout_alignEnd="@+id/heading"
+            android:layout_alignParentBottom="true"
+            android:background="#00ff0000"
+            android:gravity="center"
+            android:text="확인"
+            android:textColor="#33bbff"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/action_negative"
+            android:layout_width="80dp"
+            android:layout_height="45dp"
+            android:layout_alignStart="@+id/heading"
+            android:layout_alignTop="@+id/action_ok"
+            android:background="#00ff0000"
+            android:gravity="center"
+            android:text="취소"
+            android:textColor="#33bbff"
+            android:textSize="24sp" />
+
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/heading"
+            android:layout_centerVertical="true"
+            android:text="공부/과제" />
+
+        <CheckBox
+            android:id="@+id/checkBox2"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="알바" />
+
+        <CheckBox
+            android:id="@+id/checkBox3"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="수면" />
+
+        <CheckBox
+            android:id="@+id/checkBox4"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/heading"
+            android:layout_marginBottom="201dp"
+            android:text="운동/산책" />
+
+        <CheckBox
+            android:id="@+id/checkBox5"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="201dp"
+            android:text="문화생활" />
+
+        <CheckBox
+            android:id="@+id/checkBox6"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/heading"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="201dp"
+            android:text="식사/음주" />
+
+        <CheckBox
+            android:id="@+id/checkBox7"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/heading"
+            android:layout_alignTop="@+id/checkBox8"
+            android:text="수업" />
+
+        <CheckBox
+            android:id="@+id/checkBox8"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="156dp"
+            android:text="게임(폰)" />
+
+        <CheckBox
+            android:id="@+id/checkBox9"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/heading"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="156dp"
+            android:text="게임(PC)" />
+
+        <CheckBox
+            android:id="@+id/checkBox10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/heading"
+            android:layout_marginBottom="111dp"
+            android:text="동아리" />
+
+        <CheckBox
+            android:id="@+id/checkBox11"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/checkBox10"
+            android:layout_centerHorizontal="true"
+            android:text="수다"
+            android:textSize="13sp" />
+
+        <CheckBox
+            android:id="@+id/checkBox12"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/heading"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="111dp"
+            android:text="집안일"
+            android:textSize="13sp" />
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="374dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/heading"
+            android:layout_marginBottom="66dp"
+            android:hint="기타..." />
+
+
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "840359443944",
+    "firebase_url": "https://automatedtimemanagement.firebaseio.com",
+    "project_id": "automatedtimemanagement",
+    "storage_bucket": "automatedtimemanagement.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:840359443944:android:820e524e0bbda694",
+        "android_client_info": {
+          "package_name": "ajou.hci.atm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "840359443944-i2nkdn44ojfl9imrntjr2kn57iq9r1kn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ajou.hci.atm",
+            "certificate_hash": "379d76a21e6ad8c9168ce1e4dc4867b63bcd5c15"
+          }
+        },
+        {
+          "client_id": "840359443944-2t82krepp14bg3cmgiv9bvqgjkilrf2c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ajou.hci.atm",
+            "certificate_hash": "3ddc082f9959d13f7fc89ee33dedc8a8601002f0"
+          }
+        },
+        {
+          "client_id": "840359443944-iqmb0i5c78t811eqvenbpid4bfam21uk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0ZG2BHBKTL5U_c-eYbpy32e-okmenWu0"
+        },
+        {
+          "current_key": "AIzaSyAFtSpNgSYIhOzjM7oXY20EONCkkyZ5S68"
+        },
+        {
+          "current_key": "AIzaSyAnTJr-te0b_2ynF3DffKXlflTdieU03Jw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "840359443944-iqmb0i5c78t811eqvenbpid4bfam21uk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
