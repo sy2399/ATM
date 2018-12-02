@@ -214,11 +214,10 @@ public class MainActivity extends AppCompatActivity {
             mServiceIntent = new Intent(this, activityService.getClass());
             startService(mServiceIntent);
         }
-
-
         //Log.i("sy2399", "MainActivity" + preferences.getInt(getDateStr() + "sleep", 0));
 
     }
+
 
     @Override
     protected void onDestroy() {
@@ -414,7 +413,6 @@ public class MainActivity extends AppCompatActivity {
 
     //5.
     public void getDataPermission() {
-        //Log.i(TAG, "getDataPermission()");
 
         if (Build.VERSION.SDK_INT >= 23 &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED

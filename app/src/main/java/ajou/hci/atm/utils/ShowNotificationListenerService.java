@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,23 +41,23 @@ public class ShowNotificationListenerService extends NotificationListenerService
     @Override
     public void onCreate() {
         super.onCreate();
-        //Log.i(TAG, "onCreate()");
+        Log.i(TAG, "onCreate()");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //Log.i(TAG, "onStartCommand()");
+        Log.i(TAG, "onStartCommand()");
         return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //Log.i(TAG, "onDestroy()");
+        Log.i(TAG, "onDestroy()");
     }
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        //Log.i(TAG, "onTaskRemoved()");
+        Log.i(TAG, "onTaskRemoved()");
 
         // workaround for kitkat: set an alarm service to trigger service again
         Intent intent = new Intent(getApplicationContext(), ShowNotificationListenerService.class);
@@ -71,7 +72,7 @@ public class ShowNotificationListenerService extends NotificationListenerService
     }
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
-        //Log.i(TAG, "onNotificationPosted()");
+        Log.i(TAG, "onNotificationPosted()");
 
 //        Log.i("NotificationListener", " onNotificationPosted() - " + sbn.toString());
 //        Log.i("NotificationListener", " PackageName:" + sbn.getPackageName());
