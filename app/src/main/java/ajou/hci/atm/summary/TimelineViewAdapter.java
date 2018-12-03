@@ -26,7 +26,7 @@ public class TimelineViewAdapter extends RecyclerView.Adapter<TimelineViewHolder
 
     private List<TimelineRow> rowDataList;
 
-    TimelineViewAdapter(ArrayList<TimelineRow> objects, boolean orderTheList) {
+    TimelineViewAdapter(ArrayList<TimelineRow> objects) {
         this.rowDataList = objects;
     }
 

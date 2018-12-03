@@ -9,6 +9,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -64,7 +65,7 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
     private int listSize;
     private View backgroundView;
 
-    private TextView poiTextView;
+    //private TextView poiTextView;
     private TextView addrTextView;
 
     TimelineViewHolder(View itemView, int size) {
@@ -91,7 +92,7 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
         listSize = size;
         backgroundView = itemView.findViewById(R.id.crowBackground);
 
-        poiTextView = itemView.findViewById(R.id.poiTextView);
+        //poiTextView = itemView.findViewById(R.id.poiTextView);
         addrTextView = itemView.findViewById(R.id.addrTextView);
     }
 
@@ -170,7 +171,6 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
 
                 bindIcons(tempList);
 
-
                 if (row.getAvo().getFlag().equals("true")) {
                     emaBtn.setVisibility(View.VISIBLE);
                     emaBtn.setOnClickListener(new View.OnClickListener() {
@@ -181,7 +181,7 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
                             FragmentManager fm = ((AppCompatActivity) context).getSupportFragmentManager();
                             dialog.show(fm, "MOVE");
                             dialog.setCancelable(true);
-
+                            emaBtn.setTag("button");
                             //emaBtn.setVisibility(View.INVISIBLE);
                         }
                     });
@@ -194,11 +194,11 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
         }
 
 
-        final float scale = context.getResources().getDisplayMetrics().density;
+        //final float scale = context.getResources().getDisplayMetrics().density;
 
         int position = getAdapterPosition();
 
-        int pixels = (int) (row.getBellowLineSize() * scale + 0.5f);
+        //int pixels = (int) (row.getBellowLineSize() * scale + 0.5f);
 
         if (position == 0 && listSize == 1) {
             rowUpperLine.setVisibility(View.INVISIBLE);
@@ -209,22 +209,22 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
             rowLowerLine.setVisibility(View.VISIBLE);
             rowLowerLine.setBackgroundColor(row.getBellowLineColor());
 
-            rowLowerLine.getLayoutParams().width = pixels;
+            //rowLowerLine.getLayoutParams().width = pixels;
 
         } else if (position > 0 && position == listSize - 1) {
             rowUpperLine.setVisibility(View.VISIBLE);
             rowUpperLine.setBackgroundColor(row.getBellowLineColor());
             rowLowerLine.setVisibility(View.INVISIBLE);
 
-            rowUpperLine.getLayoutParams().width = pixels;
+            //rowUpperLine.getLayoutParams().width = pixels;
         } else {
             rowUpperLine.setVisibility(View.VISIBLE);
             rowUpperLine.setBackgroundColor(row.getBellowLineColor());
             rowLowerLine.setVisibility(View.VISIBLE);
             rowLowerLine.setBackgroundColor(row.getBellowLineColor());
 
-            rowUpperLine.getLayoutParams().width = pixels;
-            rowLowerLine.getLayoutParams().width = pixels;
+//            rowUpperLine.getLayoutParams().width = pixels;
+//            rowLowerLine.getLayoutParams().width = pixels;
 
         }
 
@@ -250,22 +250,22 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
             rowImage.setImageBitmap(row.getImage());
         }
 
-        pixels = (int) (row.getImageSize() * scale + 0.5f);
-        rowImage.getLayoutParams().width = pixels;
-        rowImage.getLayoutParams().height = pixels;
+//        pixels = (int) (row.getImageSize() * scale + 0.5f);
+//        rowImage.getLayoutParams().width = pixels;
+//        rowImage.getLayoutParams().height = pixels;
 
 
         if (row.getBackgroundColor() == 0)
             backgroundView.setBackground(null);
         else {
-            if (row.getBackgroundSize() == -1) {
-                backgroundView.getLayoutParams().width = pixels;
-                backgroundView.getLayoutParams().height = pixels;
-            } else {
-                int BackgroundPixels = (int) (row.getBackgroundSize() * scale + 0.5f);
-                backgroundView.getLayoutParams().width = BackgroundPixels;
-                backgroundView.getLayoutParams().height = BackgroundPixels;
-            }
+//            if (row.getBackgroundSize() == -1) {
+//                backgroundView.getLayoutParams().width = pixels;
+//                backgroundView.getLayoutParams().height = pixels;
+//            } else {
+//                int BackgroundPixels = (int) (row.getBackgroundSize() * scale + 0.5f);
+//                backgroundView.getLayoutParams().width = BackgroundPixels;
+//                backgroundView.getLayoutParams().height = BackgroundPixels;
+//            }
             GradientDrawable background = (GradientDrawable) backgroundView.getBackground();
             if (background != null) {
                 background.setColor(row.getBackgroundColor());
@@ -275,7 +275,7 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
 //            ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) rowImage.getLayoutParams();
 //            marginParams.setMargins(0, (int) (pixels / 2) * -1, 0, (pixels / 2) * -1);
 
-        String poiName = row.getPoiName();
+        //String poiName = row.getPoiName();
         String addrName = row.getAddrName();
 
 
@@ -296,7 +296,7 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
 
         if (size == 0) {
             linearLayout.setVisibility(View.INVISIBLE);
-        } else if (size > 0) {
+        } else {
             linearLayout.setVisibility(View.VISIBLE);
 
             Drawable appIcon1, appIcon2, appIcon3;

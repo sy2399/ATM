@@ -140,11 +140,10 @@ public class SummaryFragment extends Fragment {
         timelineRowsList = dataSetting(activitydbHelper.getActivityVOs(user.getUid(), getDateStr()));
 
         if (mAdapter == null && getContext() != null) {
-            mAdapter = new TimelineViewAdapter(timelineRowsList, false);
+            mAdapter = new TimelineViewAdapter(timelineRowsList);
             mRecyclerView.setAdapter(mAdapter);
         }else if(mAdapter != null){
-            mAdapter.notifyDataSetChanged();
-
+            //mAdapter.notifyDataSetChanged();
         }
 
 

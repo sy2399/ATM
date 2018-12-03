@@ -67,6 +67,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.i("LoginActivity","onActivityResult()");
 
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
@@ -88,6 +89,7 @@ public class LoginActivity extends BaseActivity {
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         showProgressDialog();
+        Log.i("Login", "firebaseAuthWithGoogle()");
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -106,6 +108,8 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void writeNewUser(final FirebaseUser user) {
+
+        Log.i("Login", "writeNewUser()");
         try {
 
             Ajou_DB.child("User").addListenerForSingleValueEvent(new ValueEventListener() {
