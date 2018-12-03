@@ -3,6 +3,7 @@ package ajou.hci.atm.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -75,6 +76,8 @@ public class LoginActivity extends BaseActivity {
                     if (account != null) {
                         firebaseAuthWithGoogle(account);
                     }
+                }else{
+                    Log.i("LoginActivity",task.getException().getMessage());
                 }
             } catch (ApiException e) {
                 Toast.makeText(getApplicationContext(), "Google sign in failed", Toast.LENGTH_SHORT).show();
