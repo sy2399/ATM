@@ -105,12 +105,12 @@ public class LoginActivity extends BaseActivity {
     private void writeNewUser(final FirebaseUser user) {
         try {
 
-            Ajou_DB.addListenerForSingleValueEvent(new ValueEventListener() {
+            Ajou_DB.child("User").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     //없는 회원일 경우
                     //페이지 이동해서 값 받아오기
-                    if(!dataSnapshot.child("User").child(user.getUid()).exists()){
+                    if(!dataSnapshot.child(user.getUid()).exists()){
                         User user_1 = new User(user.getDisplayName(),user.getEmail());
                         Ajou_DB.child("User").child(user.getUid()).setValue(user_1);
                         userdbHelper = new USERDBHelper(getApplicationContext(), "USER.db", null, 1);

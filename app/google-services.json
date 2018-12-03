@@ -31,6 +31,14 @@
           }
         },
         {
+          "client_id": "840359443944-jhakuus4krcsa23065r5dfds1s6uor16.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ajou.hci.atm",
+            "certificate_hash": "e973d0deeaa68e9135f2b9672982b6a1cf54fddc"
+          }
+        },
+        {
           "client_id": "840359443944-iqmb0i5c78t811eqvenbpid4bfam21uk.apps.googleusercontent.com",
           "client_type": 3
         }
