@@ -323,6 +323,8 @@ public class SummaryFragment extends Fragment {
                 myRow.setAvo(tempVO);
 
                 timelineRowsList.add(myRow);
+
+
             }
         }
         return timelineRowsList;

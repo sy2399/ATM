@@ -181,7 +181,6 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
                             FragmentManager fm = ((AppCompatActivity) context).getSupportFragmentManager();
                             dialog.show(fm, "MOVE");
                             dialog.setCancelable(true);
-                            emaBtn.setTag("button");
                             //emaBtn.setVisibility(View.INVISIBLE);
                         }
                     });
