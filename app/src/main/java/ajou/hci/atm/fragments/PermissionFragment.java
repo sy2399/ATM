@@ -158,8 +158,12 @@ public class PermissionFragment extends Fragment {
                     Intent mServiceIntent = new Intent(getContext(), activityService.getClass());
                     getContext().startService(mServiceIntent);
 
+                }else{
+                    Toast.makeText(requireContext(), "Collecting Data", Toast.LENGTH_SHORT).show();
+
                 }
-                else if(isMyServiceNotRunning(new ShowNotificationListenerService().getClass())){
+
+                if(isMyServiceNotRunning(new ShowNotificationListenerService().getClass())){
                     Toast.makeText(requireContext(), "Collecting Data", Toast.LENGTH_SHORT).show();
                     Intent mServiceIntent = new Intent(getContext(), new ShowNotificationListenerService().getClass());
                     getContext().startService(mServiceIntent);
