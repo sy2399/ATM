@@ -11,9 +11,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import ajou.hci.atm.R;
 import ajou.hci.atm.model.TimelineRow;
@@ -63,21 +66,21 @@ public class TimelineViewAdapter extends RecyclerView.Adapter<TimelineViewHolder
         return objects;
     }
 
-//    public String getDateStr() {
-//        long now = System.currentTimeMillis();
-//        Date date = new Date(now);
-//        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-//        return sdfNow.format(date);
-//    }
+    public String getDateStr() {
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return sdfNow.format(date);
+    }
 
 
-//    public List<TimelineRow> getRowDataList() {
-//        return rowDataList;
-//    }
-//
-//    public void setRowDataList(List<TimelineRow> rowDataList) {
-//        this.rowDataList = rowDataList;
-//    }
+    public List<TimelineRow> getRowDataList() {
+        return rowDataList;
+    }
+
+    public void setRowDataList(List<TimelineRow> rowDataList) {
+        this.rowDataList = rowDataList;
+    }
 
 
 //    private String getPastTime(Date date) {

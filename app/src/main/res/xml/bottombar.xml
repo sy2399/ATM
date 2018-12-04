@@ -18,6 +18,11 @@
             icon="@drawable/timetable"
             title = "History"
             />
+        <tab
+            id = "@+id/tab_permission"
+            icon="@drawable/permissioncheck"
+            title = "Permission"
+            />
 
     </tabs>
 </PreferenceScreen>

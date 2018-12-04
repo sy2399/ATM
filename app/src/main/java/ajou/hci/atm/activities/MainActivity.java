@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -22,7 +21,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -49,14 +47,15 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Set;
 
+import ajou.hci.atm.R;
 import ajou.hci.atm.data.ACTIVITYDBHelper;
 import ajou.hci.atm.data.TIMECOUNTERDBHelper;
 import ajou.hci.atm.fragments.CalendarFragment;
 import ajou.hci.atm.fragments.HomeFragment;
+import ajou.hci.atm.fragments.PermissionFragment;
 import ajou.hci.atm.model.SumVO;
 import ajou.hci.atm.summary.SummaryFragment;
 import ajou.hci.atm.utils.ActivityService;
-import ajou.hci.atm.R;
 
 public class MainActivity extends AppCompatActivity {
 //        implements HomeFragment.OnFragmentInteractionListener,
@@ -76,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int APP_PERMISSION = 3;
     private static final int NOTI_PERMISSION = 4;
     private static final int LOCSMSPERMISSION = 5;
-    //private static final int REQ_CODE_OVERLAY_PERMISSION = 6;
     private static final int OVERLAY_PERMISSION = 7;
     private static final int MY_PERMISSION_REQUEST_STORAGE = 9;
     private static final int REQUEST_LOCATION = 10;
@@ -86,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityService activityService;
     private BottomBar bottomBar;
 
-    private static String[] FRAGMENT_TAGS = {"HOME", "SUMMARY", "CALENDAR"};
+    private static String[] FRAGMENT_TAGS = {"HOME", "SUMMARY", "CALENDAR", "PERMISSION"};
     private ACTIVITYDBHelper activitydbHelper;
     private TIMECOUNTERDBHelper timecounterdbHelper;
 
@@ -170,7 +168,11 @@ public class MainActivity extends AppCompatActivity {
                 } else if (tabId == R.id.tab_cal) {
                     tag = FRAGMENT_TAGS[2];
                     selectedFragment = CalendarFragment.newInstance();
+                } else if (tabId == R.id.tab_permission) {
+                    tag = FRAGMENT_TAGS[3];
+                    selectedFragment = PermissionFragment.newInstance();
                 }
+
 
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.contentContainer, selectedFragment, tag);
@@ -204,9 +206,6 @@ public class MainActivity extends AppCompatActivity {
         //Log.i(TAG, "onStart()");
 
         activityService = new ActivityService();
-        //notiService = new ShowNotificationListenerService();
-
-        //Log.i("권한허용", "battery_p " + battery_p + ", locsms_p" + locsms_p + ", googlefit_p" + googlefit_p + ", app_p" + app_p + ", noti_p" + noti_p);
 
         if (isMyServiceNotRunning(activityService.getClass())) {
             Log.i(TAG, "onStart()-!isMyServiceRunning");
@@ -214,7 +213,6 @@ public class MainActivity extends AppCompatActivity {
             mServiceIntent = new Intent(this, activityService.getClass());
             startService(mServiceIntent);
         }
-        //Log.i("sy2399", "MainActivity" + preferences.getInt(getDateStr() + "sleep", 0));
 
     }
 
@@ -273,22 +271,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkPermission() {
 
-        if (checkSelfPermission( Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && checkSelfPermission( Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //Log.i("0zoo-location ", "permission is not exist!");
-            //권한이 없을 경우
-            //최초 권한 요청인지, 혹은 사용자에 의한 재요청인지 확인
-            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) &&
-                    shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                // 사용자가 임의로 권한을 취소시킨 경우
-                // 권한 재요청
-                requestPermissions( new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION);
-                return;
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION);
-                return;
-            }
-        }
+
 
         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED
@@ -310,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
         //절전모드 방지
         //Log.i(TAG, "getPermission()");
 
-        checkPermission();
+        //checkPermission();
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         boolean isWhiteListing = false;
@@ -324,27 +307,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (!isWhiteListing) {
             //Log.i(TAG, "0zoo !isWhiteListing");
+            @SuppressLint("BatteryLife") Intent i = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+            i.setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
+            battery_p = true;
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            preferences.edit().putBoolean("BATTERY_PERMISSION",true).apply();
+            startActivityForResult(i, APP_PERMISSION);
 
-            AlertDialog.Builder setDialog = new AlertDialog.Builder(MainActivity.this);
-            setDialog.setTitle("권한이 필요합니다.")
-                    .setMessage("어플을 사용하기 위해서는 해당 어플을 \"배터리 사용량 최적화\" 목록에서 제외하는 권한이 필요합니다. 계속하시겠습니까?")
-                    .setPositiveButton("예", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            @SuppressLint("BatteryLife") Intent i = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                            i.setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
-                            battery_p = true;
-                            startActivityForResult(i, APP_PERMISSION);
-                        }
-                    })
-                    .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(MainActivity.this, "권한 설정을 취소했습니다.", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .create()
-                    .show();
         }
 
     }
@@ -436,21 +405,12 @@ public class MainActivity extends AppCompatActivity {
             case LOCSMSPERMISSION:
                 //배터리, 구글핏, 위치, SMS 권한 허용 후
                 locsms_p = true;
-                //Log.i(TAG, "requestPermissionResult_LOCSMS");
-
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    //Log.i(TAG, "requestPermissionResult_LOCSMS-FitnessOptions");
 
-
-                    //startActivityForResult(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS), APP_PERMISSION);
                     FitnessOptions fitnessOptions = FitnessOptions.builder()
                             .addDataType(DataType.TYPE_ACTIVITY_SEGMENT, FitnessOptions.ACCESS_WRITE)
                             .addDataType(DataType.AGGREGATE_ACTIVITY_SUMMARY, FitnessOptions.ACCESS_WRITE)
-//                            .addDataType(DataType.TYPE_LOCATION_SAMPLE, FitnessOptions.ACCESS_WRITE)
-//                            .addDataType(DataType.AGGREGATE_ACTIVITY_SUMMARY, FitnessOptions.ACCESS_WRITE)
-//                            .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_WRITE)
-//                            .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_WRITE)
                             .build();
 
                     if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(this), fitnessOptions)) {
@@ -463,33 +423,18 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         googlefit_p = true;
                         activityService = new ActivityService();
-                        //notiService = new ShowNotificationListenerService();
                         if (isMyServiceNotRunning(activityService.getClass())) {
-                            //Log.i(TAG, "START When Not Running");
                             mServiceIntent = new Intent(this, activityService.getClass());
                             startService(mServiceIntent);
                         }
-                        Toast.makeText(getApplicationContext(), "권한허용" +
-                                        "\n 배터리 절전모드 권한 " + battery_p +
-                                        "\n 위치 접근 권한" + locsms_p +
-                                        "\n Google Fit 접근권한" + googlefit_p +
-                                        "\n 앱 사용 기록 접근 권한" + app_p +
-                                        "\n 알림 접근 권한" + noti_p,
-                                Toast.LENGTH_LONG).show();
                     }
-
                 }
-
-
                 break;
-            case GOOGLE_FIT_PERMISSIONS_REQUEST_CODE:
-                //Log.i(TAG, "requestPermissionResult_GOOGLEFIT");
 
+            case GOOGLE_FIT_PERMISSIONS_REQUEST_CODE:
                 googlefit_p = true;
                 activityService = new ActivityService();
-                //notiService = new ShowNotificationListenerService();
                 if (isMyServiceNotRunning(activityService.getClass())) {
-                    //Log.i(TAG, "START");
                     mServiceIntent = new Intent(this, activityService.getClass());
                     startService(mServiceIntent);
                 }

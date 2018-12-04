@@ -76,6 +76,7 @@ public class HomeFragment extends Fragment {
 
         dbuser = userdbHelper.getUser(user.getUid());
 
+
     }
 
 
