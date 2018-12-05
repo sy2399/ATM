@@ -1,55 +1,41 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/uploadBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_gravity="bottom|end"
-        app:srcCompat="@drawable/upload" />
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    android:orientation="vertical">
 
     <TableLayout
         android:id="@+id/table_topBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_gravity="top"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:orientation="vertical"
-        >
+        android:layout_width="match_parent"
+        android:orientation="vertical">
 
         <TableRow
-            android:layout_width="match_parent"
+            android:background="#FFFFFF"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#FFFFFF">
+            android:layout_width="match_parent">
 
             <TextView
-                android:id="@+id/totalPhone"
-                android:layout_width="176dp"
-                android:layout_height="60dp"
-                android:layout_weight="1"
                 android:background="#FFFFFF"
                 android:gravity="center"
+                android:id="@+id/totalPhone"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:layout_width="176dp"
                 android:orientation="vertical"
                 android:text="@string/useTime"
                 android:textColor="#000000"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/totalUsable"
-                android:layout_width="176dp"
-                android:layout_height="60dp"
-                android:layout_weight="1"
                 android:background="#FFFFFF"
                 android:gravity="center"
+                android:id="@+id/totalUsable"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:layout_width="176dp"
                 android:orientation="horizontal"
                 android:text="@string/usableTime"
                 android:textColor="#000000"
@@ -58,135 +44,63 @@
 
     </TableLayout>
 
-    <android.support.v4.widget.NestedScrollView
 
-        android:id="@+id/scrollView"
+    <TextView
+        android:background="#FFFFFF"
+        android:gravity="center"
+        android:id="@+id/AppUsed"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="1dp"
+        android:layout_marginTop="3dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:text="@string/app_used"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-        <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <com.github.mikephil.charting.charts.PieChart
+        android:background="#FFFFFF"
+        android:id="@+id/piechart"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_width="match_parent">
 
-            <TableLayout
-                android:id="@+id/table2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="top"
-                android:layout_marginBottom="0dp"
-                android:layout_marginTop="0dp"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0">
+    </com.github.mikephil.charting.charts.PieChart>
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="#FFFFFF">
-                </TableRow>
-            </TableLayout>
+    <TextView
+        android:background="#FFFFFF"
+        android:gravity="center"
+        android:id="@+id/activities"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/activites_usableTime"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/AppUsed"
-                android:layout_width="match_parent"
-                android:layout_height="27dp"
-                android:layout_marginBottom="1dp"
-                android:layout_marginTop="3dp"
-                android:background="#FFFFFF"
-                android:gravity="center"
-                android:text="@string/app_used"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/piechart"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/table2" />
+    <com.github.mikephil.charting.charts.HorizontalBarChart
+        android:id="@+id/horizontalBarchart"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_weight="1"
+        android:layout_width="match_parent">
 
-            <com.github.mikephil.charting.charts.PieChart
-                android:id="@+id/piechart"
-                android:layout_width="match_parent"
-                android:layout_height="258dp"
-                android:background="#FFFFFF"
-                app:layout_constraintBottom_toBottomOf="@id/AppUsed"
-                app:layout_constraintBottom_toTopOf="@+id/activities"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/AppUsed">
+    </com.github.mikephil.charting.charts.HorizontalBarChart>
 
-            </com.github.mikephil.charting.charts.PieChart>
-
-            <TextView
-                android:id="@+id/activities"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:background="#FFFFFF"
-                android:gravity="center"
-                android:text="@string/activites_usableTime"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/piechart"
-                app:layout_constraintBottom_toTopOf="@+id/horizontalBarchart" />
-
-            <com.github.mikephil.charting.charts.HorizontalBarChart
-                android:id="@+id/horizontalBarchart"
-                android:layout_width="366dp"
-                android:layout_height="247dp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/visitedLocation"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.2"
-                app:layout_constraintStart_toStartOf="parent">
-
-            </com.github.mikephil.charting.charts.HorizontalBarChart>
-
-            <TextView
-                android:id="@+id/visitedLocation"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:text=""
-                android:textColor="#000000"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/horizontalBarchart" />
+    <!--<com.google.android.gms.maps.MapView-->
+    <!--android:id="@+id/map"-->
+    <!--android:name="com.google.android.gms.maps.MapFragment"-->
+    <!--android:layout_width="339dp"-->
+    <!--android:layout_height="355dp"-->
+    <!--android:layout_marginEnd="5dp"-->
+    <!--android:layout_marginStart="5dp"-->
+    <!--android:layout_marginTop="5dp"-->
+    <!--app:layout_constraintEnd_toEndOf="parent"-->
+    <!--app:layout_constraintStart_toStartOf="@+id/visitedLocation"-->
+    <!--app:layout_constraintTop_toBottomOf="@+id/visitedLocation" />-->
 
 
+</LinearLayout>
 
-            <TextView
-                android:id="@+id/tvForBlank"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:text=" "
-                app:layout_constraintTop_toBottomOf="@+id/visitedLocation" />
-
-            <!--<com.google.android.gms.maps.MapView-->
-            <!--android:id="@+id/map"-->
-            <!--android:name="com.google.android.gms.maps.MapFragment"-->
-            <!--android:layout_width="339dp"-->
-            <!--android:layout_height="355dp"-->
-            <!--android:layout_marginEnd="5dp"-->
-            <!--android:layout_marginStart="5dp"-->
-            <!--android:layout_marginTop="5dp"-->
-            <!--app:layout_constraintEnd_toEndOf="parent"-->
-            <!--app:layout_constraintStart_toStartOf="@+id/visitedLocation"-->
-            <!--app:layout_constraintTop_toBottomOf="@+id/visitedLocation" />-->
-
-
-        </android.support.constraint.ConstraintLayout>
-
-    </android.support.v4.widget.NestedScrollView>
-
-  </LinearLayout>
-
-</FrameLayout>

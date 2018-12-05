@@ -1,21 +1,33 @@
 package ajou.hci.atm.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,12 +41,19 @@ import java.util.Map;
 
 import ajou.hci.atm.R;
 import ajou.hci.atm.data.ACTIVITYDBHelper;
+import ajou.hci.atm.data.APPDBHelper;
+import ajou.hci.atm.data.DBHelperInterface;
+import ajou.hci.atm.data.EMADBHelper;
+import ajou.hci.atm.data.LOCATIONDBHelper;
+import ajou.hci.atm.data.NOTIFICATIONDBHelper;
 import ajou.hci.atm.data.PHONEDBHelper;
 import ajou.hci.atm.data.TIMECOUNTERDBHelper;
+import ajou.hci.atm.data.TOTALINFODBHelper;
 import ajou.hci.atm.data.USERDBHelper;
 import ajou.hci.atm.model.PhoneVO;
 import ajou.hci.atm.model.SumVO;
 import ajou.hci.atm.model.User;
+import ajou.hci.atm.utils.CsvWriter;
 
 
 public class HomeFragment extends Fragment {
@@ -144,6 +163,16 @@ public class HomeFragment extends Fragment {
 
         ArrayList<PhoneVO> phoneVOS = phonedbHelper.getPhoneVOs(user.getUid(), getDateStr());
         drawTimeTable(view, timeList, phoneVOS);
+
+        FloatingActionButton uploadBtn = view.findViewById(R.id.uploadBtn);
+
+
+        uploadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ExportDatabaseCsvTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        });
 
         return view;
     }
@@ -316,5 +345,122 @@ public class HomeFragment extends Fragment {
         Date date = new Date(now);
         SimpleDateFormat sdfNow = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
         return sdfNow.format(date);
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class ExportDatabaseCsvTask extends AsyncTask<String, Void, Boolean> {
+
+        private final ProgressDialog dialog = new ProgressDialog(requireContext());
+
+        @Override
+        protected void onPreExecute() {
+            this.dialog.setMessage("Exporting database...");
+            this.dialog.show();
+        }
+
+        protected Boolean doInBackground(final String... args) {
+
+            try {
+                createFiles();
+                return true;
+            } catch (IOException e) {
+                return false;
+            }
+        }
+
+        protected void onPostExecute(final Boolean success) {
+            if (this.dialog.isShowing()) {
+                this.dialog.dismiss();
+            }
+            if (success) {
+                Toast.makeText(requireContext(), "Export successful!", Toast.LENGTH_SHORT).show();
+                shareCsvFile();
+            } else {
+                Toast.makeText(requireContext(), "Export failed", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        private void shareCsvFile() {
+
+            Intent shareIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+            shareIntent.setType("application/csv");
+
+            ArrayList<Uri> uriList = getUriList();
+
+            shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList);
+            startActivity(Intent.createChooser(shareIntent, "Share CSV"));
+
+        }
+
+        private ArrayList<Uri> getUriList() {
+            ArrayList<Uri> uriList = new ArrayList<>();
+            File exportDir = new File(Environment.getExternalStorageDirectory(), "/csv/");
+
+            for (String fileName : csvFileNames) {
+                File csvFile = new File(exportDir, fileName);
+                Uri uri = FileProvider.getUriForFile(requireContext()
+                        , requireContext().getApplicationContext().getPackageName() + ".fileprovider", csvFile);
+                uriList.add(uri);
+            }
+            return uriList;
+        }
+
+
+        private String[] csvFileNames = {"ACTIVITY.csv", "APP.csv", "EMA.csv", "LOCATION.csv", "NOTIFICATION.csv", "PHONE_USAGE.csv", "TIMECOUNTER.csv", "TOTAL_INFO.csv", "USER.csv"};
+
+        private void createFiles() throws IOException {
+            ACTIVITYDBHelper activitydbHelper = new ACTIVITYDBHelper(requireContext(), "ACTIVITY.db", null, 1);
+            createFile(csvFileNames[0], activitydbHelper);
+
+            APPDBHelper appdbHelper = new APPDBHelper(requireContext(), "APP.db", null, 1);
+            createFile(csvFileNames[1], appdbHelper);
+
+            EMADBHelper emadbHelper = new EMADBHelper(requireContext(), "EMA.db", null, 1);
+            createFile(csvFileNames[2], emadbHelper);
+
+            LOCATIONDBHelper locationdbHelper = new LOCATIONDBHelper(requireContext(), "LOCATION.db", null, 1);
+            createFile(csvFileNames[3], locationdbHelper);
+
+            NOTIFICATIONDBHelper notificationdbHelper = new NOTIFICATIONDBHelper(requireContext(), "NOTIFICATION.db", null, 1);
+            createFile(csvFileNames[4], notificationdbHelper);
+
+            PHONEDBHelper phonedbHelper = new PHONEDBHelper(requireContext(), "PHONE_USAGE.db", null, 1);
+            createFile(csvFileNames[5], phonedbHelper);
+
+            TIMECOUNTERDBHelper timecounterdbHelper
+                    = new TIMECOUNTERDBHelper(requireContext(), "TIMECOUNTER.db", null, 1);
+            createFile(csvFileNames[6], timecounterdbHelper);
+
+            TOTALINFODBHelper totalinfodbHelper = new TOTALINFODBHelper(requireContext(), "TOTAL_INFO.db", null, 1);
+            createFile(csvFileNames[7], totalinfodbHelper);
+
+            USERDBHelper userdbHelper = new USERDBHelper(requireContext(), "USER.db", null, 1);
+            createFile(csvFileNames[8], userdbHelper);
+        }
+
+        private void createFile(String fileName, DBHelperInterface helperInterface) throws IOException {
+            File exportDir = new File(Environment.getExternalStorageDirectory(), "/csv/");
+            if (!exportDir.exists()) {
+                exportDir.mkdirs();
+            }
+
+            File file = new File(exportDir, fileName);
+
+            file.createNewFile();
+
+            CsvWriter csvWrite = new CsvWriter(new FileWriter(file));
+
+            Cursor curCSV = helperInterface.raw();
+            csvWrite.writeNext(curCSV.getColumnNames());
+            while (curCSV.moveToNext()) {
+                String[] mySecondStringArray = new String[curCSV.getColumnNames().length];
+                for (int i = 0; i < curCSV.getColumnNames().length; i++) {
+                    mySecondStringArray[i] = curCSV.getString(i);
+                }
+                csvWrite.writeNext(mySecondStringArray);
+            }
+            csvWrite.close();
+            curCSV.close();
+        }
     }
 }

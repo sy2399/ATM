@@ -127,16 +127,26 @@ public class MainActivity extends AppCompatActivity {
         //Manually displaying the first fragment - one time only
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.contentContainer, HomeFragment.newInstance(), FRAGMENT_TAGS[0]);
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
 
         if (isAllPermissionAllowed()) {
-            Log.i(TAG, "All of permission is allowed!");
             startService();
         } else {
             getPermission();
             getRuntimePermission();
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isAllPermissionAllowed()) {
+            startService();
+        } else {
+            getPermission();
+            getRuntimePermission();
+        }
     }
 
     private boolean isMyServiceNotRunning(Class<?> serviceClass) {
@@ -174,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.contentContainer, selectedFragment, tag);
-                transaction.commit();
+                transaction.commitAllowingStateLoss();
             }
         });
     }
@@ -191,30 +201,13 @@ public class MainActivity extends AppCompatActivity {
         if (intent.getBooleanExtra("survey", false)) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.contentContainer, SummaryFragment.newInstance());
-            transaction.commit();
+            transaction.commitAllowingStateLoss();
 
             //setUpBottomBar();
             bottomBar.selectTabAtPosition(1);
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //Log.i(TAG, "onStart()");
-
-        activityService = new ActivityService();
-        //notiService = new ShowNotificationListenerService();
-
-        if (isMyServiceNotRunning(activityService.getClass())) {
-            Log.i(TAG, "onStart()-!isMyServiceRunning");
-
-            mServiceIntent = new Intent(this, activityService.getClass());
-            startService(mServiceIntent);
-        }
-        //Log.i("sy2399", "MainActivity" + preferences.getInt(getDateStr() + "sleep", 0));
-
-    }
 
 
     @Override
@@ -458,16 +451,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startService() {
-        Toast.makeText(getApplicationContext(), "권한허용" +
-                        "\n 배터리 절전모드 권한 " + battery_p +
-                        "\n 위치 접근 권한" + location_p +
-                        "\n 저장소 접근 권한" + storage_p +
-                        "\n sms 접근 권한" + sms_p +
-                        "\n 앱 위에 표시 권한" + overlay_p +
-                        "\n Google Fit 접근권한" + googlefit_p +
-                        "\n 앱 사용 기록 접근 권한" + appUse_p +
-                        "\n 알림 접근 권한" + notification_p,
-                Toast.LENGTH_LONG).show();
+//        Toast.makeText(getApplicationContext(), "권한허용" +
+//                        "\n 배터리 절전모드 권한 " + battery_p +
+//                        "\n 위치 접근 권한" + location_p +
+//                        "\n 저장소 접근 권한" + storage_p +
+//                        "\n sms 접근 권한" + sms_p +
+//                        "\n 앱 위에 표시 권한" + overlay_p +
+//                        "\n Google Fit 접근권한" + googlefit_p +
+//                        "\n 앱 사용 기록 접근 권한" + appUse_p +
+//                        "\n 알림 접근 권한" + notification_p,
+//                Toast.LENGTH_LONG).show();
         activityService = new ActivityService();
         if (isMyServiceNotRunning(activityService.getClass())) {
             mServiceIntent = new Intent(this, activityService.getClass());
