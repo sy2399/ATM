@@ -3,7 +3,6 @@ package ajou.hci.atm.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -67,7 +66,6 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.i("LoginActivity","onActivityResult()");
 
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
@@ -77,8 +75,6 @@ public class LoginActivity extends BaseActivity {
                     if (account != null) {
                         firebaseAuthWithGoogle(account);
                     }
-                }else{
-                    Log.i("LoginActivity",task.getException().getMessage());
                 }
             } catch (ApiException e) {
                 Toast.makeText(getApplicationContext(), "Google sign in failed", Toast.LENGTH_SHORT).show();
@@ -89,7 +85,6 @@ public class LoginActivity extends BaseActivity {
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         showProgressDialog();
-        Log.i("Login", "firebaseAuthWithGoogle()");
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -108,8 +103,6 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void writeNewUser(final FirebaseUser user) {
-
-        Log.i("Login", "writeNewUser()");
         try {
 
             Ajou_DB.child("User").addListenerForSingleValueEvent(new ValueEventListener() {

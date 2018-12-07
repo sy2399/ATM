@@ -60,8 +60,6 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
     private Context context;
     private PackageManager pm;
 
-    //private ArrayList<APPTEMP> tempList = new ArrayList<>();
-
     private int listSize;
     private View backgroundView;
 
@@ -71,7 +69,6 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
     TimelineViewHolder(View itemView, int size) {
         super(itemView);
 
-        //TextView rowDate = (TextView) view.findViewById(R.id.crowDate);
         rowTitle = itemView.findViewById(R.id.crowTitle);
         rowDescription = itemView.findViewById(R.id.crowDesc);
         rowImage = itemView.findViewById(R.id.appImg);
@@ -139,7 +136,7 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
             counter++;
         }
 
-        //Log.i("sy2399", "getSortedApp" + tempList.size());
+        Log.i("TimelineViewHolder", tempList.toString());
         AppTEMPComparator comparator = new AppTEMPComparator();
         Collections.sort(tempList, comparator);
 
@@ -151,9 +148,7 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
 
     void bindTimeline(TimelineRow item) {
 
-        //final boolean[] checkedFlag = {false};
         row = item;
-        //Log.i("imsso","bindTimeLine " + item.toString());
 
         String sDate = row.getDescription().split(" ")[0];
         String eDate = row.getDescription().split(" ")[2];
@@ -166,6 +161,9 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
             Date e = dateFormat2.parse(tempe);
 
             if (e.getTime() - s.getTime() >= (10000 * 6 * 30) && item.getAvo().getValue().equals("3")) {
+
+                Log.i("TimelineViewHolder", temps+"~"+tempe);
+                Log.i("TimelineViewHolder", item.getAvo().toString());
 
                 ArrayList<APPTEMP> tempList = getSortedAppLogs(temps, tempe);
 
@@ -181,12 +179,12 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
                             FragmentManager fm = ((AppCompatActivity) context).getSupportFragmentManager();
                             dialog.show(fm, "MOVE");
                             dialog.setCancelable(true);
-                            emaBtn.setTag("button");
                             //emaBtn.setVisibility(View.INVISIBLE);
                         }
                     });
                 }
             } else {
+                linearLayout.setVisibility(View.INVISIBLE);
                 emaBtn.setVisibility(View.INVISIBLE);
             }
         } catch (ParseException e) {
@@ -194,11 +192,7 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
         }
 
 
-        //final float scale = context.getResources().getDisplayMetrics().density;
-
         int position = getAdapterPosition();
-
-        //int pixels = (int) (row.getBellowLineSize() * scale + 0.5f);
 
         if (position == 0 && listSize == 1) {
             rowUpperLine.setVisibility(View.INVISIBLE);
@@ -209,23 +203,15 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
             rowLowerLine.setVisibility(View.VISIBLE);
             rowLowerLine.setBackgroundColor(row.getBellowLineColor());
 
-            //rowLowerLine.getLayoutParams().width = pixels;
-
         } else if (position > 0 && position == listSize - 1) {
             rowUpperLine.setVisibility(View.VISIBLE);
             rowUpperLine.setBackgroundColor(row.getBellowLineColor());
             rowLowerLine.setVisibility(View.INVISIBLE);
-
-            //rowUpperLine.getLayoutParams().width = pixels;
         } else {
             rowUpperLine.setVisibility(View.VISIBLE);
             rowUpperLine.setBackgroundColor(row.getBellowLineColor());
             rowLowerLine.setVisibility(View.VISIBLE);
             rowLowerLine.setBackgroundColor(row.getBellowLineColor());
-
-//            rowUpperLine.getLayoutParams().width = pixels;
-//            rowLowerLine.getLayoutParams().width = pixels;
-
         }
 
 
@@ -250,34 +236,18 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
             rowImage.setImageBitmap(row.getImage());
         }
 
-//        pixels = (int) (row.getImageSize() * scale + 0.5f);
-//        rowImage.getLayoutParams().width = pixels;
-//        rowImage.getLayoutParams().height = pixels;
-
 
         if (row.getBackgroundColor() == 0)
             backgroundView.setBackground(null);
         else {
-//            if (row.getBackgroundSize() == -1) {
-//                backgroundView.getLayoutParams().width = pixels;
-//                backgroundView.getLayoutParams().height = pixels;
-//            } else {
-//                int BackgroundPixels = (int) (row.getBackgroundSize() * scale + 0.5f);
-//                backgroundView.getLayoutParams().width = BackgroundPixels;
-//                backgroundView.getLayoutParams().height = BackgroundPixels;
-//            }
             GradientDrawable background = (GradientDrawable) backgroundView.getBackground();
             if (background != null) {
                 background.setColor(row.getBackgroundColor());
             }
         }
 
-//            ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) rowImage.getLayoutParams();
-//            marginParams.setMargins(0, (int) (pixels / 2) * -1, 0, (pixels / 2) * -1);
-
         //String poiName = row.getPoiName();
         String addrName = row.getAddrName();
-
 
         if (addrName == null || addrName.equals("")) {
             addrTextView.setVisibility(View.GONE);
@@ -292,8 +262,6 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
 
         int size = tempList.size();
 
-        //Log.i("imsso","bindIcons ");
-
         if (size == 0) {
             linearLayout.setVisibility(View.INVISIBLE);
         } else {
@@ -301,8 +269,6 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
 
             Drawable appIcon1, appIcon2, appIcon3;
 
-            //if (size >= 1) {
-            //if(tempList.size() >=1){
             icon1.setVisibility(View.VISIBLE);
             try {
                 appIcon1 = pm.getApplicationIcon(tempList.get(0).getPackageName());
@@ -318,11 +284,8 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
                     Toast.makeText(context, "" + getAppNameFromPackage(tempList.get(0).getPackageName(), context), Toast.LENGTH_SHORT).show();
                 }
             });
-            //}
-            //}
 
             if (size >= 2) {
-                //if(tempList.size()>=2){
                 icon2.setVisibility(View.VISIBLE);
 
                 try {
@@ -339,11 +302,9 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
                         Toast.makeText(context, "" + getAppNameFromPackage(tempList.get(1).getPackageName(), context), Toast.LENGTH_SHORT).show();
                     }
                 });
-                // }
             }
 
             if (size >= 3) {
-                //if(tempList.size() >= 3){
                 icon3.setVisibility(View.VISIBLE);
                 try {
                     appIcon3 = pm.getApplicationIcon(tempList.get(2).getPackageName());
@@ -358,7 +319,6 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
                         Toast.makeText(context, "" + getAppNameFromPackage(tempList.get(2).getPackageName(), context), Toast.LENGTH_SHORT).show();
                     }
                 });
-                // }
             }
         }
     }
@@ -386,16 +346,6 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
 
             // Order by descending
             return Double.compare(secondValue, firstValue);
-
-            /*
-            if (firstValue > secondValue) {
-                return -1;
-            } else if (firstValue < secondValue) {
-                return 1;
-            } else {
-                return 0;
-            }
-             */
         }
     }
 
@@ -410,12 +360,6 @@ public class TimelineViewHolder extends RecyclerView.ViewHolder {
         }
 
     }
-
-//    public Bitmap getAppIcon(byte[] b) {
-//        Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
-//        return bitmap;
-//    }
-
 
     private String getAppNameFromPackage(String packageName, Context context) {
         Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
