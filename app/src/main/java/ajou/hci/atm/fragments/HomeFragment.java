@@ -179,6 +179,8 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+
+
     private Map<String, Integer> timeResIdMap = setupTimeResIdMap();
 
     private Map<String, Integer> setupTimeResIdMap() {
