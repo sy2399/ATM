@@ -4,4 +4,5 @@ import android.database.Cursor;
 
 public interface DBHelperInterface {
     Cursor raw();
+
 }

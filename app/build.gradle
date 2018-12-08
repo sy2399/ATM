@@ -10,8 +10,8 @@ android {
         minSdkVersion 23
         targetSdkVersion 27
         multiDexEnabled true
-        versionCode 13
-        versionName "13.0"
+        versionCode 15
+        versionName "15.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

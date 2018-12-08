@@ -2,30 +2,22 @@ package ajou.hci.atm.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
@@ -51,9 +43,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -69,18 +58,12 @@ import java.util.Locale;
 import ajou.hci.atm.R;
 import ajou.hci.atm.data.ACTIVITYDBHelper;
 import ajou.hci.atm.data.APPDBHelper;
-import ajou.hci.atm.data.DBHelperInterface;
 import ajou.hci.atm.data.EMADBHelper;
 import ajou.hci.atm.data.LOCATIONDBHelper;
-import ajou.hci.atm.data.NOTIFICATIONDBHelper;
-import ajou.hci.atm.data.PHONEDBHelper;
 import ajou.hci.atm.data.TIMECOUNTERDBHelper;
-import ajou.hci.atm.data.TOTALINFODBHelper;
-import ajou.hci.atm.data.USERDBHelper;
 import ajou.hci.atm.model.AppLogVO;
 import ajou.hci.atm.model.EMAVO;
 import ajou.hci.atm.model.LocationVO;
-import ajou.hci.atm.utils.CsvWriter;
 
 
 @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)

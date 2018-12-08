@@ -119,5 +119,37 @@ public class PHONEDBHelper extends SQLiteOpenHelper implements DBHelperInterface
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM PHONE_USAGE", new String[]{});
     }
+
+    public PhoneVO getEqual(String uid, String dateStr, PhoneVO pvo) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        PhoneVO equal = null;
+        try (Cursor cursor = db.rawQuery("SELECT * FROM PHONE_USAGE where uid = " + "'" + uid + "' and date = '" + dateStr + "' and timeTable = '" + pvo.getTimeTable() + "'", null)) {
+            while (cursor.moveToNext()) {
+                equal = new PhoneVO();
+                pvo.setTimeTable(cursor.getString(4));
+                pvo.setType(cursor.getString(6));
+                pvo.setTotal(cursor.getString(5));
+                pvo.setDayOfWeek(cursor.getString(3));
+                pvo.setDate(cursor.getString(2));
+                pvo.setPercent(cursor.getString(7));
+                pvo.setsTime(cursor.getString(8));
+                pvo.seteTime(cursor.getString(9));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return equal;
+    }
+
+
+
+    public void update(String uid, String dateStr, PhoneVO pvo) {
+        SQLiteDatabase db = getReadableDatabase();
+        db.execSQL("UPDATE PHONE_USAGE SET total='"+pvo.getTotal() + "', type= '"+pvo.getType() + "', percent ='"+pvo.getPercent() + "' WHERE uid='" + uid + "' and date ='" + dateStr+"' and timeTable = '"+pvo.getTimeTable()+"'");
+
+
+    }
 }
 

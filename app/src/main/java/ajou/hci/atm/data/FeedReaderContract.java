@@ -100,8 +100,6 @@ interface FeedReaderContract {
         static final String COLUMN_NAME_PNAME = "pName";
         static final String COLUMN_NAME_TEXT = "text";
         static final String COLUMN_NAME_TITLE = "title";
-
-
     }
 
 
@@ -114,5 +112,12 @@ interface FeedReaderContract {
         static final String COLUMN_NAME_CLASS = "class";
     }
 
+    class NetworkEntry implements BaseColumns {
+        static final String TABLE_NAME = "NETWORK";
+        static final String COLUMN_NAME_UID = "uid";
+        static final String COLUMN_NAME_DATE = "date";
+        static final String COLUMN_NAME_TYPE = "type";
+        static final String COLUMN_NAME_NAME = "name";
+    }
 
 }

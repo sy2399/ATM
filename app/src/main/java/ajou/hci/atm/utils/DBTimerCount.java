@@ -102,32 +102,9 @@ public class DBTimerCount {
 
         }
     }
-    public  boolean isWifiAvailable (Context context)
-    {
-        boolean br = false;
-        ConnectivityManager cm = null;
-        NetworkInfo ni = null;
 
-        cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        ni = cm.getActiveNetworkInfo();
-        br = ((null != ni) && (ni.isConnected()) && (ni.getType() == ConnectivityManager.TYPE_WIFI));
 
-        return br;
-    }
 
-    public  boolean isNetworkAvailable (Context context)
-    {
-        boolean br = false;
-        ConnectivityManager cm = null;
-        NetworkInfo ni = null;
-
-        cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        ni = cm.getActiveNetworkInfo();
-        br = ((null != ni) && (ni.isConnected()) && (ni.getType() == ConnectivityManager.TYPE_MOBILE));
-
-        return br;
-    }
-    // it sets the timer to print the counter every x seconds
     public void initializeTimerTask() {
         timerTask = new TimerTask() {
             @Override
@@ -136,12 +113,43 @@ public class DBTimerCount {
                     insertFB();
                     calcuateSummary();
                     calculateTotal();
+                    checkAPP();
+
+
                 }catch (Exception e){
                     e.printStackTrace();
                 }
 
             }
         };
+    }
+
+    public void stopTimerTask() {
+        // stop the timer, if it's not already null
+        if(timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+    }
+    private void checkAPP() {
+        ArrayList<AppLogVO> appLogVOS = appdbHelper.getAppVOs(user.getUid(), getDateStr());
+        for(int i=0;i<appLogVOS.size();i++){
+            if(i > 0){
+                try {
+                    long stime = dateFormat.parse(appLogVOS.get(i).getStime()).getTime();
+                    long etime = dateFormat.parse(appLogVOS.get(i-1).getEtime()).getTime();
+
+                    if(etime>stime){
+                        appdbHelper.delete(i-1);
+
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
     }
 
     private void calculateTotal() {
@@ -218,7 +226,14 @@ public class DBTimerCount {
                 pvo.setPercent(percent + "");
                 pvo.setsTime(times.get(i).getSdate());
                 pvo.seteTime(times.get(i).getEdate());
-                phonedbHelper.insert(user.getUid(), getDateStr(), pvo);
+
+                PhoneVO equal = phonedbHelper.getEqual(user.getUid(), getDateStr(), pvo);
+                if(equal == null){
+                    phonedbHelper.insert(user.getUid(), getDateStr(), pvo);
+
+                }else{
+                    phonedbHelper.update(user.getUid(), getDateStr(), pvo);
+                }
 
 
             } catch (ParseException e) {
@@ -488,30 +503,6 @@ public class DBTimerCount {
 
     }
 
-
-
-    public void stopTimerTask() {
-        // stop the timer, if it's not already null
-        if(timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-    }
-
-    public  String getDateStr(){
-        long now = System.currentTimeMillis();
-        Date date = new Date(now);
-        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-
-        return sdfNow.format(date);
-    }
-
-    public  String getTimeStr(){
-        long now = System.currentTimeMillis();
-        Date date = new Date(now);
-        SimpleDateFormat sdfNow = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-        return sdfNow.format(date);
-    }
     public long getSleepTime(){
         long diff = 0;
         long tmp = 0;
@@ -555,7 +546,43 @@ public class DBTimerCount {
         return diff;
     }
 
+    public  boolean isWifiAvailable (Context context) {
+        boolean br = false;
+        ConnectivityManager cm = null;
+        NetworkInfo ni = null;
 
+        cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ni = cm.getActiveNetworkInfo();
+        br = ((null != ni) && (ni.isConnected()) && (ni.getType() == ConnectivityManager.TYPE_WIFI));
 
+        return br;
+    }
+
+    public  boolean isNetworkAvailable (Context context) {
+        boolean br = false;
+        ConnectivityManager cm = null;
+        NetworkInfo ni = null;
+
+        cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ni = cm.getActiveNetworkInfo();
+        br = ((null != ni) && (ni.isConnected()) && (ni.getType() == ConnectivityManager.TYPE_MOBILE));
+
+        return br;
+    }
+
+    public  String getDateStr(){
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+        return sdfNow.format(date);
+    }
+
+    public  String getTimeStr(){
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat sdfNow = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        return sdfNow.format(date);
+    }
 
 }

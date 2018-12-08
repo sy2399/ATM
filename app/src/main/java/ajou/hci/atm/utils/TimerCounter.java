@@ -57,12 +57,14 @@ import ajou.hci.atm.activities.MainActivity;
 import ajou.hci.atm.data.ACTIVITYDBHelper;
 import ajou.hci.atm.data.APPDBHelper;
 import ajou.hci.atm.data.LOCATIONDBHelper;
+import ajou.hci.atm.data.NETWORKDBHelper;
 import ajou.hci.atm.data.NOTIFICATIONDBHelper;
 import ajou.hci.atm.location.LocationUtils;
 import ajou.hci.atm.model.ActivityVO;
 import ajou.hci.atm.model.AppItem;
 import ajou.hci.atm.model.AppLogVO;
 import ajou.hci.atm.model.LocationVO;
+import ajou.hci.atm.model.NetworkVO;
 import ajou.hci.atm.model.PhoneVO;
 import ajou.hci.atm.model.SumVO;
 
@@ -75,16 +77,18 @@ public class TimerCounter {
     private Context context;
     public GoogleSignInAccount googleSignInAccount;
 
-    public static DatabaseReference Ajou_DB;
+    public  DatabaseReference Ajou_DB;
     public FirebaseAuth mAuth;
-    public static FirebaseUser user = null;
+    public  FirebaseUser user = null;
+
+    NetworkVO networkVO = new NetworkVO();
 
     ArrayList<ActivityVO> activityVOArrayList = new ArrayList<>();
     ArrayList<AppItem> appLogVOArrayList = new ArrayList<>();
     ArrayList<LocationVO> locationVOArrayList = new ArrayList<>();
     private ArrayList<SumVO> sumVOArrayList = new ArrayList<>();
     private ArrayList<PhoneVO> phoneVOS = new ArrayList<>();
-    public static final String TAG = "TimerCount_Activity";
+    public final String TAG = "TimerCount_Activity";
 
     private Timer timer, timer2;
     private TimerTask timerTask;
@@ -95,9 +99,12 @@ public class TimerCounter {
     LOCATIONDBHelper locationdbHelper;
     NOTIFICATIONDBHelper notificationdbHelper;
     APPDBHelper appdbHelper;
+    NETWORKDBHelper networkdbHelper;
 
     private FusedLocationProviderClient client;
     private LocationRequest locationRequest;
+
+
 
     public TimerCounter(Context context, GoogleSignInAccount googleSignInAccount) {
         this.context = context;
@@ -109,6 +116,7 @@ public class TimerCounter {
         activitydbHelper = new ACTIVITYDBHelper(context, "ACTIVITY.db", null, 1);
         locationdbHelper = new LOCATIONDBHelper(context, "LOCATION.db", null, 1);
         notificationdbHelper = new NOTIFICATIONDBHelper(context, "NOTIFICATION.db", null, 1);
+        networkdbHelper = new NETWORKDBHelper(context, "NETWORK.db", null, 1);
 
         mUsageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE); //Context.USAGE_STATS_SERVICE
         appdbHelper = new APPDBHelper(context, "APP.db", null, 1);
@@ -150,13 +158,19 @@ public class TimerCounter {
 
         if(isWifiAvailable(context)){
             //Toast.makeText(context,"WIFI", Toast.LENGTH_LONG).show();
+            networkdbHelper.insert(user.getUid(), getDateStr(), networkVO);
             timer.schedule(timerTask, 1000, 10000 * 6 * 10);
 
         }else if(isNetworkAvailable(context)){
             //Toast.makeText(context,"NETWORK", Toast.LENGTH_LONG).show();
+            networkdbHelper.insert(user.getUid(), getDateStr(), networkVO);
             timer.schedule(timerTask, 1000, 10000 * 6 * 30);
 
         }
+
+
+
+
 
 
     }
@@ -169,6 +183,11 @@ public class TimerCounter {
 
         cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         ni = cm.getActiveNetworkInfo();
+
+        networkVO.setName(ni.getExtraInfo());
+        networkVO.setTime(getTimeStr());
+        networkVO.setType("WIFI");
+
         br = ((null != ni) && (ni.isConnected()) && (ni.getType() == ConnectivityManager.TYPE_WIFI));
 
         return br;
@@ -181,6 +200,9 @@ public class TimerCounter {
 
         cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         ni = cm.getActiveNetworkInfo();
+        networkVO.setName(ni.getExtraInfo());
+        networkVO.setTime(getTimeStr());
+        networkVO.setType("NETWORK");
         br = ((null != ni) && (ni.isConnected()) && (ni.getType() == ConnectivityManager.TYPE_MOBILE));
 
         return br;

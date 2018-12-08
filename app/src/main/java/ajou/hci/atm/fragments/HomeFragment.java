@@ -45,6 +45,7 @@ import ajou.hci.atm.data.APPDBHelper;
 import ajou.hci.atm.data.DBHelperInterface;
 import ajou.hci.atm.data.EMADBHelper;
 import ajou.hci.atm.data.LOCATIONDBHelper;
+import ajou.hci.atm.data.NETWORKDBHelper;
 import ajou.hci.atm.data.NOTIFICATIONDBHelper;
 import ajou.hci.atm.data.PHONEDBHelper;
 import ajou.hci.atm.data.TIMECOUNTERDBHelper;
@@ -407,7 +408,7 @@ public class HomeFragment extends Fragment {
         }
 
 
-        private String[] csvFileNames = {"ACTIVITY.csv", "APP.csv", "EMA.csv", "LOCATION.csv", "NOTIFICATION.csv", "PHONE_USAGE.csv", "TIMECOUNTER.csv", "TOTAL_INFO.csv", "USER.csv"};
+        private String[] csvFileNames = {"ACTIVITY.csv", "APP.csv", "EMA.csv", "LOCATION.csv", "NOTIFICATION.csv", "PHONE_USAGE.csv", "TIMECOUNTER.csv", "TOTAL_INFO.csv", "NETWORK.csv", "USER.csv"};
 
         private void createFiles() throws IOException {
             ACTIVITYDBHelper activitydbHelper = new ACTIVITYDBHelper(requireContext(), "ACTIVITY.db", null, 1);
@@ -435,8 +436,11 @@ public class HomeFragment extends Fragment {
             TOTALINFODBHelper totalinfodbHelper = new TOTALINFODBHelper(requireContext(), "TOTAL_INFO.db", null, 1);
             createFile(csvFileNames[7], totalinfodbHelper);
 
+            NETWORKDBHelper networkdbHelper = new NETWORKDBHelper(requireContext(), "NETWORK.db", null, 1);
+            createFile(csvFileNames[8], networkdbHelper);
+
             USERDBHelper userdbHelper = new USERDBHelper(requireContext(), "USER.db", null, 1);
-            createFile(csvFileNames[8], userdbHelper);
+            createFile(csvFileNames[9], userdbHelper);
         }
 
         private void createFile(String fileName, DBHelperInterface helperInterface) throws IOException {

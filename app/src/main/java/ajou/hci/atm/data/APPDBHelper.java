@@ -402,6 +402,8 @@ public class APPDBHelper extends SQLiteOpenHelper implements DBHelperInterface {
         //timestamp - tmpVo.getStime --> total
     }
 
+
+
     @Override
     public Cursor raw() {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -409,5 +411,10 @@ public class APPDBHelper extends SQLiteOpenHelper implements DBHelperInterface {
     }
 
 
+    public void delete(int i) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        db.execSQL("delete from APP where _id='" + i + "'");
+    }
 }
 

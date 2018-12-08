@@ -74,10 +74,6 @@ public class ShowNotificationListenerService extends NotificationListenerService
     public void onNotificationPosted(StatusBarNotification sbn) {
         Log.i(TAG, "onNotificationPosted()");
 
-//        Log.i("NotificationListener", " onNotificationPosted() - " + sbn.toString());
-//        Log.i("NotificationListener", " PackageName:" + sbn.getPackageName());
-//        Log.i("NotificationListener", " PostTime:" + sbn.getPostTime());
-//        Log.i("NotificationListener", " PostTime_getTime:" + getTimeStr());
         notificationdbHelper = new NOTIFICATIONDBHelper(getApplicationContext(), "NOTIFICATION.db", null, 1);
         try {
             Notification notificatin = sbn.getNotification();
@@ -166,6 +162,7 @@ public class ShowNotificationListenerService extends NotificationListenerService
     public void onNotificationRemoved(StatusBarNotification sbn) {
         //Log.i(TAG, " onNotificationRemoved() - " + sbn.toString());
     }
+
     public static String getDateStr(){
         long now = System.currentTimeMillis();
         Date date = new Date(now);
@@ -173,6 +170,7 @@ public class ShowNotificationListenerService extends NotificationListenerService
 
         return sdfNow.format(date);
     }
+
     public String getTimeStr(){
         long now = System.currentTimeMillis();
         Date date = new Date(now);
