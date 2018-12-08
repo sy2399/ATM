@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,8 +59,6 @@ import ajou.hci.atm.utils.CsvWriter;
 
 
 public class HomeFragment extends Fragment {
-    //private OnFragmentInteractionListener mListener;
-
     public DatabaseReference Ajou_DB;
     public FirebaseUser user;
     public FirebaseAuth mAuth;
@@ -75,6 +74,8 @@ public class HomeFragment extends Fragment {
     private PHONEDBHelper phonedbHelper;
     private TIMECOUNTERDBHelper timecounterdbHelper;
     private User dbuser;
+
+    private String[] csvFileNames = {"ACTIVITY.csv", "APP.csv", "EMA.csv", "LOCATION.csv", "NOTIFICATION.csv", "PHONE_USAGE.csv", "TIMECOUNTER.csv", "TOTAL_INFO.csv", "NETWORK.csv", "USER.csv"};
 
 
     public static HomeFragment newInstance() {
@@ -311,30 +312,6 @@ public class HomeFragment extends Fragment {
         }
         return diff;
     }
-    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
-
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
-
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
-
 
     public String getDateStr() {
         long now = System.currentTimeMillis();
@@ -344,11 +321,26 @@ public class HomeFragment extends Fragment {
         return sdfNow.format(date);
     }
 
-    public String getTimeStr() {
-        long now = System.currentTimeMillis();
-        Date date = new Date(now);
-        SimpleDateFormat sdfNow = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-        return sdfNow.format(date);
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        Log.i("Home", "onDestroyView()");
+        File exportDir = new File(Environment.getExternalStorageDirectory(), "/csv/");
+        if(exportDir.exists()) {
+            for (String fileName : csvFileNames) {
+                File csvFile = new File(exportDir, fileName);
+                if(csvFile.exists()) {
+                    Log.i("onActivityResult()", "delete!!");
+                    csvFile.delete();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -409,8 +401,6 @@ public class HomeFragment extends Fragment {
             return uriList;
         }
 
-
-        private String[] csvFileNames = {"ACTIVITY.csv", "APP.csv", "EMA.csv", "LOCATION.csv", "NOTIFICATION.csv", "PHONE_USAGE.csv", "TIMECOUNTER.csv", "TOTAL_INFO.csv", "NETWORK.csv", "USER.csv"};
 
         private void createFiles() throws IOException {
             ACTIVITYDBHelper activitydbHelper = new ACTIVITYDBHelper(requireContext(), "ACTIVITY.db", null, 1);
