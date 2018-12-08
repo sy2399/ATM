@@ -14,6 +14,7 @@ public class NETWORKDBHelper extends SQLiteOpenHelper implements DBHelperInterfa
                     FeedReaderContract.NetworkEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     FeedReaderContract.NetworkEntry.COLUMN_NAME_UID + " TEXT," +
                     FeedReaderContract.NetworkEntry.COLUMN_NAME_DATE + " TEXT," +
+                    FeedReaderContract.NetworkEntry.COLUMN_NAME_TIME + " TEXT," +
                     FeedReaderContract.NetworkEntry.COLUMN_NAME_TYPE + " TEXT," +
                     FeedReaderContract.NetworkEntry.COLUMN_NAME_NAME + " TEXT)";
 
@@ -44,7 +45,7 @@ public class NETWORKDBHelper extends SQLiteOpenHelper implements DBHelperInterfa
         SQLiteDatabase db = getWritableDatabase();
         //DB에 입력한 값으로 행 추가
         db.execSQL("INSERT INTO " + FeedReaderContract.NetworkEntry.TABLE_NAME +
-                " VALUES(null, '" + uid + "', '" + date + "', '" + nvo.getType() + "','" + nvo.getName() + "' );");
+                " VALUES(null, '" + uid + "', '" + date + "', '"+nvo.getTime() + "','" + nvo.getType() + "','" + nvo.getName() + "' );");
 
 
     }

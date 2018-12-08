@@ -116,6 +116,7 @@ interface FeedReaderContract {
         static final String TABLE_NAME = "NETWORK";
         static final String COLUMN_NAME_UID = "uid";
         static final String COLUMN_NAME_DATE = "date";
+        static final String COLUMN_NAME_TIME = "time";
         static final String COLUMN_NAME_TYPE = "type";
         static final String COLUMN_NAME_NAME = "name";
     }

@@ -28,6 +28,7 @@ import ajou.hci.atm.data.ACTIVITYDBHelper;
 import ajou.hci.atm.data.APPDBHelper;
 import ajou.hci.atm.data.EMADBHelper;
 import ajou.hci.atm.data.LOCATIONDBHelper;
+import ajou.hci.atm.data.NETWORKDBHelper;
 import ajou.hci.atm.data.NOTIFICATIONDBHelper;
 import ajou.hci.atm.data.PHONEDBHelper;
 import ajou.hci.atm.data.TIMECOUNTERDBHelper;
@@ -36,6 +37,7 @@ import ajou.hci.atm.data.USERDBHelper;
 import ajou.hci.atm.model.ActivityVO;
 import ajou.hci.atm.model.AppLogVO;
 import ajou.hci.atm.model.EMAVO;
+import ajou.hci.atm.model.NetworkVO;
 import ajou.hci.atm.model.NotifyVO;
 import ajou.hci.atm.model.PhoneVO;
 import ajou.hci.atm.model.SumVO;
@@ -62,6 +64,8 @@ public class DBTimerCount {
     private NOTIFICATIONDBHelper notificationdbHelper;
     private TIMECOUNTERDBHelper timecounterdbHelper;
     private TOTALINFODBHelper totalinfodbHelper;
+    private NETWORKDBHelper networkdbHelper;
+    NetworkVO networkVO = new NetworkVO();
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 
     public DBTimerCount(Context context, GoogleSignInAccount googleSignInAccount){
@@ -80,6 +84,8 @@ public class DBTimerCount {
         notificationdbHelper = new NOTIFICATIONDBHelper(context, "NOTIFICATION.db", null, 1);
         timecounterdbHelper = new TIMECOUNTERDBHelper(context, "TIMECOUNTER.db", null, 1);
         totalinfodbHelper = new TOTALINFODBHelper(context, "TOTAL_INFO.db", null, 1);
+        networkdbHelper = new NETWORKDBHelper(context, "NETWORK.db", null, 1);
+
     }
     public void Timer() {
 
@@ -95,9 +101,11 @@ public class DBTimerCount {
         initializeTimerTask();
 
         if(isWifiAvailable(context)){
+            networkdbHelper.insert(user.getUid(), getDateStr(), networkVO);
             timer.schedule(timerTask, 1000, 10000 * 6 * 10);
 
         }else if(isNetworkAvailable(context)){
+            networkdbHelper.insert(user.getUid(), getDateStr(), networkVO);
             timer.schedule(timerTask, 1000, 10000 * 6 * 30);
 
         }
@@ -554,7 +562,9 @@ public class DBTimerCount {
         cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         ni = cm.getActiveNetworkInfo();
         br = ((null != ni) && (ni.isConnected()) && (ni.getType() == ConnectivityManager.TYPE_WIFI));
-
+        networkVO.setTime(getTimeStr());
+        networkVO.setType("WIFI");
+        networkVO.setName(ni.getExtraInfo());
         return br;
     }
 
@@ -566,7 +576,9 @@ public class DBTimerCount {
         cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         ni = cm.getActiveNetworkInfo();
         br = ((null != ni) && (ni.isConnected()) && (ni.getType() == ConnectivityManager.TYPE_MOBILE));
-
+        networkVO.setTime(getTimeStr());
+        networkVO.setType("NETWORK");
+        networkVO.setName(ni.getExtraInfo());
         return br;
     }
 
