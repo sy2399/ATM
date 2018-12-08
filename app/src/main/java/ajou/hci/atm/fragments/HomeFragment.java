@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,8 @@ import ajou.hci.atm.model.SumVO;
 import ajou.hci.atm.model.User;
 import ajou.hci.atm.utils.CsvWriter;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public class HomeFragment extends Fragment {
     //private OnFragmentInteractionListener mListener;
@@ -75,6 +78,8 @@ public class HomeFragment extends Fragment {
     private TIMECOUNTERDBHelper timecounterdbHelper;
     private User dbuser;
 
+    private static final int SEND_CODE = 9;
+
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -94,8 +99,6 @@ public class HomeFragment extends Fragment {
         timecounterdbHelper = new TIMECOUNTERDBHelper(getContext(), "TIMECOUNTER.db", null, 1);
 
         dbuser = userdbHelper.getUser(user.getUid());
-
-
     }
 
 
@@ -348,6 +351,26 @@ public class HomeFragment extends Fragment {
         return sdfNow.format(date);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == SEND_CODE){
+            File exportDir = new File(Environment.getExternalStorageDirectory(), "/csv/");
+            if(exportDir.exists()) {
+                for (String fileName : csvFileNames) {
+                    File csvFile = new File(exportDir, fileName);
+                    if(csvFile.exists()) {
+                        Log.i("onActivityResult()", "delete!!");
+                        csvFile.delete();
+                    }
+                }
+            }
+        }
+    }
+
+    private String[] csvFileNames = {"ACTIVITY.csv", "APP.csv", "EMA.csv", "LOCATION.csv", "NOTIFICATION.csv", "PHONE_USAGE.csv", "TIMECOUNTER.csv", "TOTAL_INFO.csv", "USER.csv"};
+
     @SuppressLint("StaticFieldLeak")
     private class ExportDatabaseCsvTask extends AsyncTask<String, Void, Boolean> {
 
@@ -389,7 +412,7 @@ public class HomeFragment extends Fragment {
             ArrayList<Uri> uriList = getUriList();
 
             shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList);
-            startActivity(Intent.createChooser(shareIntent, "Share CSV"));
+            startActivityForResult(Intent.createChooser(shareIntent, "Share CSV"), SEND_CODE);
 
         }
 
@@ -406,8 +429,6 @@ public class HomeFragment extends Fragment {
             return uriList;
         }
 
-
-        private String[] csvFileNames = {"ACTIVITY.csv", "APP.csv", "EMA.csv", "LOCATION.csv", "NOTIFICATION.csv", "PHONE_USAGE.csv", "TIMECOUNTER.csv", "TOTAL_INFO.csv", "USER.csv"};
 
         private void createFiles() throws IOException {
             ACTIVITYDBHelper activitydbHelper = new ACTIVITYDBHelper(requireContext(), "ACTIVITY.db", null, 1);
