@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
@@ -69,13 +68,13 @@ public class DBTimerCount {
     NetworkVO networkVO = new NetworkVO();
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 
-    public DBTimerCount(Context context, GoogleSignInAccount googleSignInAccount){
+    public DBTimerCount(Context context, GoogleSignInAccount googleSignInAccount) {
         this.context = context;
         this.googleSignInAccount = googleSignInAccount;
 
         Ajou_DB = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
-        user =   mAuth.getCurrentUser();
+        user = mAuth.getCurrentUser();
         activitydbHelper = new ACTIVITYDBHelper(context, "ACTIVITY.db", null, 1);
         locationdbHelper = new LOCATIONDBHelper(context, "LOCATION.db", null, 1);
         emadbHelper = new EMADBHelper(context, "EMA.db", null, 1);
@@ -88,6 +87,7 @@ public class DBTimerCount {
         networkdbHelper = new NETWORKDBHelper(context, "NETWORK.db", null, 1);
 
     }
+
     public void Timer() {
 
     }
@@ -120,7 +120,7 @@ public class DBTimerCount {
             public void run() {
                 try{
                     insertFB();
-                    calcuateSummary();
+                    calculateSummary();
                     calculateTotal();
                     checkAPP();
 
@@ -135,21 +135,22 @@ public class DBTimerCount {
 
     public void stopTimerTask() {
         // stop the timer, if it's not already null
-        if(timer != null) {
+        if (timer != null) {
             timer.cancel();
             timer = null;
         }
     }
+
     private void checkAPP() {
         ArrayList<AppLogVO> appLogVOS = appdbHelper.getAppVOs(user.getUid(), getDateStr());
-        for(int i=0;i<appLogVOS.size();i++){
-            if(i > 0){
+        for (int i = 0; i < appLogVOS.size(); i++) {
+            if (i > 0) {
                 try {
                     long stime = dateFormat.parse(appLogVOS.get(i).getStime()).getTime();
-                    long etime = dateFormat.parse(appLogVOS.get(i-1).getEtime()).getTime();
+                    long etime = dateFormat.parse(appLogVOS.get(i - 1).getEtime()).getTime();
 
-                    if(etime>stime){
-                        appdbHelper.delete(i-1);
+                    if (etime > stime) {
+                        appdbHelper.delete(i - 1);
 
                     }
                 } catch (ParseException e) {
@@ -167,9 +168,9 @@ public class DBTimerCount {
         int usableTotal = activitydbHelper.getTotal(user.getUid(), getDateStr());
         long diff = getSleepTime();
 
-        if(usableTotal != 0 && diff != 0){
-            usableTotal = (int)(long)(usableTotal - diff);
-            if(usableTotal < 0){
+        if (usableTotal != 0 && diff != 0) {
+            usableTotal = (int) (long) (usableTotal - diff);
+            if (usableTotal < 0) {
                 usableTotal = 0;
             }
         }
@@ -178,58 +179,59 @@ public class DBTimerCount {
         totalVO.setDate(getDateStr());
         totalVO.setPhone_m(phoneTotal);
         totalVO.setUsable_m(usableTotal);
-        totalVO.setSleep_m((int)(long)diff);
+        totalVO.setSleep_m((int) (long) diff);
 
-        if(dbTvo == null){
+        if (dbTvo == null) {
             totalinfodbHelper.insert(user.getUid(), getDateStr(), totalVO);
-        }else{
+        } else {
             totalinfodbHelper.update(user.getUid(), getDateStr(), totalVO);
         }
 
 
-
     }
 
-    private void calcuateSummary() {
+    private void calculateSummary() {
         ArrayList<TimeVO> times = getTodayTimeVO();
-        for(int i=0;i<times.size();i++){
+        for (int i = 0; i < times.size(); i++) {
 
             TimeVO tvo = times.get(i);
-
 
             String sdate = tvo.getSdate();
             String edate = tvo.getEdate();
 
             ArrayList<AppLogVO> apps = appdbHelper.getAppVOWithSETime(user.getUid(), getDateStr(), sdate, edate);
-            //ArrayList<LocationVO> locs = locationdbHelper.getLocVOWithSETime(user.getUid(), getDateStr(), sdate, edate);
 
             Ajou_DB.child("PhoneUsageInClass").child(user.getUid()).child(getDateStr()).child(times.get(i).getTimeTable()).child("appList").setValue(apps);
-            //Ajou_DB.child("PhoneUsageInClass").child(user.getUid()).child(getDateStr()).child(times.get(i).getTimeTable()).child("locList").setValue(locs);
 
-            DateFormat minuiteFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            DateFormat minuiteFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
 
             try {
-                long start = minuiteFormat.parse(sdate.substring(0,16)).getTime();
-                long end = minuiteFormat.parse(edate.substring(0,16)).getTime();
+                long start = minuiteFormat.parse(sdate.substring(0, 16)).getTime();
+                long end = minuiteFormat.parse(edate.substring(0, 16)).getTime();
 
-                long start_m = start/60000;
-                long end_m = end/60000;
+                long start_m = start / 60000;
+                long end_m = end / 60000;
 
 
                 int totalInClass = timecounterdbHelper.getTotalInClass(user.getUid(), getDateStr(), start_m, end_m);
 
                 PhoneVO pvo = new PhoneVO();
                 pvo.setTimeTable(times.get(i).getTimeTable());
+                pvo.setDayOfWeek(Calendar.getInstance().get(Calendar.DAY_OF_WEEK) + "");
                 Calendar cal = Calendar.getInstance();
                 pvo.setDayOfWeek(cal.get(Calendar.DAY_OF_WEEK)+ "");
                 pvo.setTotal(totalInClass + "");
+                double percent = ((double) totalInClass / (double) 75) * 100.0;
+                String type;
+                if (percent >= 50)
 
                 double percent =  ((double) totalInClass / (double) 75) * 100.0;
                 String type = "default";
                 if(percent >= 50)
                     type = "Red";
-                else if(percent >=10 && percent <50)
+                else if (percent >= 10)
                     type = "Yellow";
+                else type = "Blue";
                 else if(percent <10)
                     type = "Blue";
 
@@ -239,19 +241,11 @@ public class DBTimerCount {
                 pvo.setsTime(times.get(i).getSdate());
                 pvo.seteTime(times.get(i).getEdate());
 
-
-                Log.i("DBTIMERCOUNT", pvo.toString());
-
                 PhoneVO equal = phonedbHelper.getEqual(user.getUid(), getDateStr(), pvo);
-
-                Log.i("DBTIMERCOUNT2", pvo.toString());
-
-                if(equal == null){
-
+                if (equal == null) {
                     phonedbHelper.insert(user.getUid(), getDateStr(), pvo);
 
-                }else{
-
+                } else {
                     phonedbHelper.update(user.getUid(), getDateStr(), pvo);
                 }
 
@@ -261,12 +255,11 @@ public class DBTimerCount {
             }
 
 
-
         }
 
     }
 
-    private ArrayList<TimeVO> getTodayTimeVO(){
+    private ArrayList<TimeVO> getTodayTimeVO() {
         ArrayList<String> timeList = new ArrayList<>();
         ArrayList<TimeVO> timeVOS = new ArrayList<>();
         String timeTable = userdbHelper.getTimeList(user.getUid());
@@ -286,30 +279,26 @@ public class DBTimerCount {
 
         etimeCal.setTime(now);
 
-        Date stime;
-        Date etime;
-
         Calendar cal = Calendar.getInstance();
 
         int d = cal.get(Calendar.DAY_OF_WEEK);
-        Log.i("sy2399_timetable",""+ d);
-        switch (d){
-            case(1):
-                day = "sun";
-                break;
-            case(2):
+        switch (d) {
+//            case (1):
+//                day = "sun";
+//                break;
+            case (2):
                 day = "mon";
                 break;
-            case(3):
+            case (3):
                 day = "tue";
                 break;
-            case(4):
+            case (4):
                 day = "wed";
                 break;
-            case(5):
+            case (5):
                 day = "thu";
                 break;
-            case(6):
+            case (6):
                 day = "fri";
                 break;
 
@@ -321,11 +310,11 @@ public class DBTimerCount {
 
         }
 
-        if(timeList.size()!=0) {
+        if (timeList.size() != 0) {
             for (int i = 0; i < timeList.size(); i++) {
 
                 final String time = timeList.get(i);
-                if(day !=null ){
+                if (day != null) {
                     if (time.contains(day)) {
                         //오늘의 시간표가 걸러짐
                         TimeVO tv = new TimeVO();
@@ -420,16 +409,11 @@ public class DBTimerCount {
                             etimeCal.set(Calendar.HOUR_OF_DAY, 20);
                         }
 
-                        stime = stimeCal.getTime();
-                        etime = etimeCal.getTime();
-
-                        tv.setSdate(dateFormat.format(stime));
-                        tv.setEdate(dateFormat.format(etime));
+                        tv.setSdate(dateFormat.format(stimeCal.getTime()));
+                        tv.setEdate(dateFormat.format(etimeCal.getTime()));
                         timeVOS.add(tv);
                     }
                 }
-
-
 
 
             }
@@ -442,14 +426,14 @@ public class DBTimerCount {
         final ArrayList<ActivityVO> activityVOArrayList = activitydbHelper.getActivityVOs(user.getUid(), getDateStr());
         final ArrayList<Location> locationVOArrayList = locationdbHelper.getLocationList(user.getUid(), getDateStr());
         final ArrayList<EMAVO> emavoArrayList = emadbHelper.getEMAVOs(user.getUid(), getDateStr());
-        final ArrayList<AppLogVO> appLogVOArrayList =appdbHelper.getAppVOs(user.getUid(), getDateStr());
+        final ArrayList<AppLogVO> appLogVOArrayList = appdbHelper.getAppVOs(user.getUid(), getDateStr());
         final ArrayList<NotifyVO> notifyVOArrayList = notificationdbHelper.getNotiVOs(user.getUid(), getDateStr());
         Ajou_DB.child("Activity").child(user.getUid()).child(getDateStr()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int count = (int)dataSnapshot.getChildrenCount();
+                int count = (int) dataSnapshot.getChildrenCount();
                 int dbCount = activityVOArrayList.size();
-                if(dbCount > count )
+                if (dbCount > count)
                     Ajou_DB.child("Activity").child(user.getUid()).child(getDateStr()).setValue(activityVOArrayList);
 
             }
@@ -462,9 +446,9 @@ public class DBTimerCount {
         Ajou_DB.child("APPLog").child(user.getUid()).child(getDateStr()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int count = (int)dataSnapshot.getChildrenCount();
+                int count = (int) dataSnapshot.getChildrenCount();
                 int dbCount = appLogVOArrayList.size();
-                if(dbCount > count )
+                if (dbCount > count)
                     Ajou_DB.child("APPLog").child(user.getUid()).child(getDateStr()).setValue(appLogVOArrayList);
 
             }
@@ -478,9 +462,9 @@ public class DBTimerCount {
         Ajou_DB.child("Location").child(user.getUid()).child(getDateStr()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int count = (int)dataSnapshot.getChildrenCount();
+                int count = (int) dataSnapshot.getChildrenCount();
                 int dbCount = locationVOArrayList.size();
-                if(dbCount > count )
+                if (dbCount > count)
                     Ajou_DB.child("Location").child(user.getUid()).child(getDateStr()).setValue(locationVOArrayList);
             }
 
@@ -493,9 +477,9 @@ public class DBTimerCount {
         Ajou_DB.child("EMA").child(user.getUid()).child(getDateStr()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int count = (int)dataSnapshot.getChildrenCount();
+                int count = (int) dataSnapshot.getChildrenCount();
                 int dbCount = emavoArrayList.size();
-                if(dbCount > count )
+                if (dbCount > count)
                     Ajou_DB.child("EMA").child(user.getUid()).child(getDateStr()).setValue(emavoArrayList);
 
             }
@@ -509,9 +493,9 @@ public class DBTimerCount {
         Ajou_DB.child("NOTIFICATION").child(user.getUid()).child(getDateStr()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int count = (int)dataSnapshot.getChildrenCount();
+                int count = (int) dataSnapshot.getChildrenCount();
                 int dbCount = notifyVOArrayList.size();
-                if(dbCount > count )
+                if (dbCount > count)
                     Ajou_DB.child("NOTIFICATION").child(user.getUid()).child(getDateStr()).setValue(notifyVOArrayList);
 
             }
@@ -524,7 +508,7 @@ public class DBTimerCount {
 
     }
 
-    public long getSleepTime(){
+    private long getSleepTime() {
         long diff = 0;
         long tmp = 0;
         try {
@@ -546,15 +530,15 @@ public class DBTimerCount {
             String s = sdfNow.format(stime);
             long start = sdfNow.parse(s).getTime();
 
-            ArrayList <SumVO> sumVOArrayList   = timecounterdbHelper.getSleepList(user.getUid(), getDateStr(), m/60000);
+            ArrayList<SumVO> sumVOArrayList = timecounterdbHelper.getSleepList(user.getUid(), getDateStr(), m / 60000);
 
-            tmp = start/60000;
-            for(int i=0;i<sumVOArrayList.size();i++){
+            tmp = start / 60000;
+            for (int i = 0; i < sumVOArrayList.size(); i++) {
 
                 long curdiff = sumVOArrayList.get(i).getMin() - tmp;
                 //Log.i("sy2399", tmp + " " + sumVOArrayList.get(i).getMin() + "  " + curdiff);
                 tmp = sumVOArrayList.get(i).getMin();
-                if(curdiff > diff){
+                if (curdiff > diff) {
                     diff = curdiff;
 
                 }
@@ -567,7 +551,7 @@ public class DBTimerCount {
         return diff;
     }
 
-    public  boolean isWifiAvailable (Context context) {
+    private boolean isWifiAvailable(Context context) {
         boolean br = false;
         ConnectivityManager cm = null;
         NetworkInfo ni = null;
@@ -581,7 +565,7 @@ public class DBTimerCount {
         return br;
     }
 
-    public  boolean isNetworkAvailable (Context context) {
+    private boolean isNetworkAvailable(Context context) {
         boolean br = false;
         ConnectivityManager cm = null;
         NetworkInfo ni = null;
@@ -595,7 +579,7 @@ public class DBTimerCount {
         return br;
     }
 
-    public  String getDateStr(){
+    public String getDateStr() {
         long now = System.currentTimeMillis();
         Date date = new Date(now);
         SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -603,7 +587,7 @@ public class DBTimerCount {
         return sdfNow.format(date);
     }
 
-    public  String getTimeStr(){
+    public String getTimeStr() {
         long now = System.currentTimeMillis();
         Date date = new Date(now);
         SimpleDateFormat sdfNow = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());

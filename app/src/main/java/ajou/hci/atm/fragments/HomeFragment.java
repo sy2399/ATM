@@ -63,7 +63,7 @@ public class HomeFragment extends Fragment {
     public FirebaseUser user;
     public FirebaseAuth mAuth;
 
-    //public final String TAG = "HOMEFRAGMENT";
+    public final String TAG = "HOMEFRAGMENT";
 
     private List<String> timeList = new ArrayList<>();
 
@@ -124,12 +124,12 @@ public class HomeFragment extends Fragment {
         int usableTotal = activitydbHelper.getTotal(user.getUid(), getDateStr());
         long diff = getSleepTime();
 
-        if(usableTotal != 0 && diff != 0){
+        if (usableTotal != 0 && diff != 0) {
             //if(!isCalcuateSleep){
-            preferences.edit().putInt(getDateStr() + "sleep",(int)(long)diff).apply();
+            preferences.edit().putInt(getDateStr() + "sleep", (int) (long) diff).apply();
 
-            usableTotal = (int)(long)(usableTotal - diff);
-            if(usableTotal < 0){
+            usableTotal = (int) (long) (usableTotal - diff);
+            if (usableTotal < 0) {
                 usableTotal = 0;
 
             }
@@ -141,8 +141,6 @@ public class HomeFragment extends Fragment {
             //}
         }
 
-        //Log.i("sy2399", "Fragment" + preferences.getInt(getDateStr() + "sleep", 0));
-
 
         int phoneTotal_h = phoneTotal / 60;
         int phoneTotal_m = phoneTotal % 60;
@@ -153,6 +151,7 @@ public class HomeFragment extends Fragment {
         phoneUsage.setText("스마트폰 사용 시간\n" + phoneTotal_h + "시간 " + phoneTotal_m + "분");
         usableTime.setText("활용 가능 시간\n" + usableTotal_h + "시간 " + usableTotal_m + "분");
 
+
         String timeTable = dbuser.getTimeTable();
         String[] time = timeTable.split(",");
 
@@ -160,12 +159,11 @@ public class HomeFragment extends Fragment {
             timeList.add(aTime.replace(" ", ""));
         }
 
-        ArrayList<PhoneVO> phoneVOS = phonedbHelper.getPhoneVOs(user.getUid(), getDateStr());
-        Log.i("pvos",phoneVOS.toString());
+        ArrayList<PhoneVO> phoneVOS = getWeeklyPhones();
+
         drawTimeTable(view, timeList, phoneVOS);
 
         FloatingActionButton uploadBtn = view.findViewById(R.id.uploadBtn);
-
 
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,6 +175,48 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+    private ArrayList<PhoneVO> getWeeklyPhones() {
+
+        ArrayList<PhoneVO> list = phonedbHelper.getPhoneVOs(user.getUid(), getDateStr());
+
+        int today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        // mon 2, tue 3, wed 4, thu 5, fri 6, sat 7, sun 1,
+
+        if (today > 2) {
+            String date = getPreviousDate(1);
+            Log.i(TAG, "date##" + date);
+            list.addAll(phonedbHelper.getPhoneVOs(user.getUid(), date));
+        }
+
+        if (today > 3) {
+            String date = getPreviousDate(2);
+            Log.i(TAG, "date##" + date);
+            list.addAll(phonedbHelper.getPhoneVOs(user.getUid(), date));
+        }
+
+        if (today > 4) {
+            String date = getPreviousDate(3);
+            Log.i(TAG, "date##" + date);
+            list.addAll(phonedbHelper.getPhoneVOs(user.getUid(), date));
+        }
+
+        if (today > 5) {
+            String date = getPreviousDate(4);
+            Log.i(TAG, "date##" + date);
+            list.addAll(phonedbHelper.getPhoneVOs(user.getUid(), date));
+        }
+
+        return list;
+    }
+
+    private String getPreviousDate(int day) {
+
+        long now = System.currentTimeMillis();
+        Date date = new Date(now - day * 24 * 60 * 60 * 1000);
+        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+        return sdfNow.format(date);
+    }
 
 
     private Map<String, Integer> timeResIdMap = setupTimeResIdMap();
@@ -237,38 +277,36 @@ public class HomeFragment extends Fragment {
             tv.setBackgroundResource(R.color.defaultTime);
         }
         try {
-            if (Calendar.DAY_OF_WEEK != 2) {
-                for (int i = 0; i < phoneVOS.size(); i++) {
-                    PhoneVO tmp = phoneVOS.get(i);
-                    int dayOfWeek = Integer.parseInt(tmp.getDayOfWeek());
-                    if (Calendar.DAY_OF_WEEK >= dayOfWeek && System.currentTimeMillis() - dateFormat.parse(tmp.getsTime()).getTime() >= 0) {
-                        String type = tmp.getType();
-                        String time = tmp.getTimeTable();
-                        String text = "폰 사용량 \n " + tmp.getPercent().split("\\.")[0] + "%";
-                        TextView tv = view.findViewById(timeResIdMap.get(time));
-                        tv.setText(text);
-                        switch (type) {
-                            case "Red":
-                                tv.setBackgroundResource(R.color.lostUrMind);
-                                break;
-                            case "Yellow":
-                                tv.setBackgroundResource(R.color.warning);
-                                break;
-                            case "Blue":
-                                tv.setBackgroundResource(R.color.wellDone);
-                                break;
-                        }
+            for (PhoneVO vo : phoneVOS) {
+                Log.i(TAG, "pvo##" + vo.toString());
+
+                if (System.currentTimeMillis() >= dateFormat.parse(vo.getsTime()).getTime()) {
+                    String type = vo.getType();
+                    String time = vo.getTimeTable();
+                    String percent = vo.getPercent();
+                    String text = "폰 사용량 \n " + percent.split("\\.")[0] + "%";
+                    TextView tv = view.findViewById(timeResIdMap.get(time));
+                    tv.setText(text);
+                    switch (type) {
+                        case "Red":
+                            tv.setBackgroundResource(R.color.lostUrMind);
+                            break;
+                        case "Yellow":
+                            tv.setBackgroundResource(R.color.warning);
+                            break;
+                        case "Blue":
+                            tv.setBackgroundResource(R.color.wellDone);
+                            break;
                     }
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    public long getSleepTime(){
+    public long getSleepTime() {
         long diff = 0;
         long tmp = 0;
         try {
@@ -290,14 +328,14 @@ public class HomeFragment extends Fragment {
             String s = sdfNow.format(stime);
             long start = sdfNow.parse(s).getTime();
 
-            ArrayList <SumVO> sumVOArrayList   = timecounterdbHelper.getSleepList(user.getUid(), getDateStr(), m/60000);
+            ArrayList<SumVO> sumVOArrayList = timecounterdbHelper.getSleepList(user.getUid(), getDateStr(), m / 60000);
 
-            tmp = start/60000;
-            for(int i=0;i<sumVOArrayList.size();i++){
+            tmp = start / 60000;
+            for (int i = 0; i < sumVOArrayList.size(); i++) {
 
                 long curdiff = sumVOArrayList.get(i).getMin() - tmp;
                 tmp = sumVOArrayList.get(i).getMin();
-                if(curdiff > diff){
+                if (curdiff > diff) {
                     diff = curdiff;
 
                 }
@@ -324,10 +362,10 @@ public class HomeFragment extends Fragment {
 
         Log.i("Home", "onDestroyView()");
         File exportDir = new File(Environment.getExternalStorageDirectory(), "/csv/");
-        if(exportDir.exists()) {
+        if (exportDir.exists()) {
             for (String fileName : csvFileNames) {
                 File csvFile = new File(exportDir, fileName);
-                if(csvFile.exists()) {
+                if (csvFile.exists()) {
                     Log.i("onActivityResult()", "delete!!");
                     csvFile.delete();
                 }
