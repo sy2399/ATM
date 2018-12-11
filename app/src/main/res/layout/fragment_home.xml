@@ -737,7 +737,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/cell_shape"
                     android:gravity="center"
-                    android:textColor="@color/common_google_signin_btn_text_dark_default"
+                    android:textColor="#000000"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
