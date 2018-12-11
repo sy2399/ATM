@@ -141,8 +141,6 @@ public class HomeFragment extends Fragment {
             //}
         }
 
-
-
         //Log.i("sy2399", "Fragment" + preferences.getInt(getDateStr() + "sleep", 0));
 
 
@@ -155,9 +153,7 @@ public class HomeFragment extends Fragment {
         phoneUsage.setText("스마트폰 사용 시간\n" + phoneTotal_h + "시간 " + phoneTotal_m + "분");
         usableTime.setText("활용 가능 시간\n" + usableTotal_h + "시간 " + usableTotal_m + "분");
 
-
         String timeTable = dbuser.getTimeTable();
-        //Log.i("sy2399", "timeTable" + timeTable);
         String[] time = timeTable.split(",");
 
         for (String aTime : time) {
@@ -165,6 +161,7 @@ public class HomeFragment extends Fragment {
         }
 
         ArrayList<PhoneVO> phoneVOS = phonedbHelper.getPhoneVOs(user.getUid(), getDateStr());
+        Log.i("pvos",phoneVOS.toString());
         drawTimeTable(view, timeList, phoneVOS);
 
         FloatingActionButton uploadBtn = view.findViewById(R.id.uploadBtn);

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -50,6 +51,7 @@ public class PHONEDBHelper extends SQLiteOpenHelper implements DBHelperInterface
         // 읽고 쓰기가 가능하게 DB 열기
         SQLiteDatabase db = getWritableDatabase();
         //DB에 입력한 값으로 행 추가
+        Log.i("PVO INSERT",pvo.toString());
         db.execSQL("INSERT INTO " + FeedReaderContract.PhoneUsageEntry.TABLE_NAME +
                 " VALUES(null, '" + uid + "', '" + date + "', '" + pvo.getDayOfWeek() + "','" + pvo.getTimeTable() + "','" + pvo.getTotal() + "','" + pvo.getType() + "','" + pvo.getPercent() + "','" + pvo.getsTime() + "','" + pvo.geteTime() + "' );");
 
@@ -60,9 +62,11 @@ public class PHONEDBHelper extends SQLiteOpenHelper implements DBHelperInterface
         ArrayList<PhoneVO> phoneVOS = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
 
+
         try (Cursor cursor = db.rawQuery("SELECT * FROM PHONE_USAGE where uid = " + "'" + uid + "' and date = '" + date + "'", null)) {
             while (cursor.moveToNext()) {
                 PhoneVO pvo = new PhoneVO();
+
                 pvo.setTimeTable(cursor.getString(4));
                 pvo.setType(cursor.getString(6));
                 pvo.setTotal(cursor.getString(5));
@@ -71,6 +75,11 @@ public class PHONEDBHelper extends SQLiteOpenHelper implements DBHelperInterface
                 pvo.setPercent(cursor.getString(7));
                 pvo.setsTime(cursor.getString(8));
                 pvo.seteTime(cursor.getString(9));
+
+
+
+
+
                 phoneVOS.add(pvo);
             }
         } catch (Exception e) {
@@ -127,14 +136,14 @@ public class PHONEDBHelper extends SQLiteOpenHelper implements DBHelperInterface
         try (Cursor cursor = db.rawQuery("SELECT * FROM PHONE_USAGE where uid = " + "'" + uid + "' and date = '" + dateStr + "' and timeTable = '" + pvo.getTimeTable() + "'", null)) {
             while (cursor.moveToNext()) {
                 equal = new PhoneVO();
-                pvo.setTimeTable(cursor.getString(4));
-                pvo.setType(cursor.getString(6));
-                pvo.setTotal(cursor.getString(5));
-                pvo.setDayOfWeek(cursor.getString(3));
-                pvo.setDate(cursor.getString(2));
-                pvo.setPercent(cursor.getString(7));
-                pvo.setsTime(cursor.getString(8));
-                pvo.seteTime(cursor.getString(9));
+                equal.setTimeTable(cursor.getString(4));
+                equal.setType(cursor.getString(6));
+                equal.setTotal(cursor.getString(5));
+                equal.setDayOfWeek(cursor.getString(3));
+                equal.setDate(cursor.getString(2));
+                equal.setPercent(cursor.getString(7));
+                equal.setsTime(cursor.getString(8));
+                equal.seteTime(cursor.getString(9));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -147,6 +156,7 @@ public class PHONEDBHelper extends SQLiteOpenHelper implements DBHelperInterface
 
     public void update(String uid, String dateStr, PhoneVO pvo) {
         SQLiteDatabase db = getReadableDatabase();
+        Log.i("PVO UPDATE", pvo.toString());
         db.execSQL("UPDATE PHONE_USAGE SET total='"+pvo.getTotal() + "', type= '"+pvo.getType() + "', percent ='"+pvo.getPercent() + "' WHERE uid='" + uid + "' and date ='" + dateStr+"' and timeTable = '"+pvo.getTimeTable()+"'");
 
 

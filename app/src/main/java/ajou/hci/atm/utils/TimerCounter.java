@@ -343,7 +343,7 @@ public class TimerCounter {
 
     private void insertAndReadData() {
 
-        //Log.i("ActivityTimerCount()", "insertAndReadData()");
+        Log.i("ActivityTimerCount()", "insertAndReadData()");
         readHistoryData();
     }
 

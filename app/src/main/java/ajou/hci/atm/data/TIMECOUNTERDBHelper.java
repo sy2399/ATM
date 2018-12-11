@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -101,7 +102,7 @@ public class TIMECOUNTERDBHelper extends SQLiteOpenHelper implements DBHelperInt
         SQLiteDatabase db = getReadableDatabase();
         try (Cursor cursor = db.rawQuery("SELECT count(*), min FROM TIMECOUNTER where uid=" + "'" + uid + "' and date = '" + date + "' and min>=" + start_m + " and min <=" + end_m, null)) {
             while (cursor.moveToNext()) {
-                //Log.i("sy2399", "getTotalInClass" + start_m +  "  " + end_m + "  " + cursor.getInt(1));
+                Log.i("sy2399", "getTotalInClass" + start_m +  "  " + end_m + "  " + cursor.getInt(1));
 
                 count = cursor.getInt(0);
             }

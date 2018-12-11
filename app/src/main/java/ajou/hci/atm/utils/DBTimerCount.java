@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
@@ -153,6 +154,7 @@ public class DBTimerCount {
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
+                    e.printStackTrace();
                 }
 
 
@@ -218,9 +220,10 @@ public class DBTimerCount {
 
                 PhoneVO pvo = new PhoneVO();
                 pvo.setTimeTable(times.get(i).getTimeTable());
-                pvo.setDayOfWeek(Calendar.DAY_OF_WEEK + "");
+                Calendar cal = Calendar.getInstance();
+                pvo.setDayOfWeek(cal.get(Calendar.DAY_OF_WEEK)+ "");
                 pvo.setTotal(totalInClass + "");
-                //Log.i("sy2399", "DBTimerCount  " + times.get(i).getTimeTable() + " " +  totalInClass);
+
                 double percent =  ((double) totalInClass / (double) 75) * 100.0;
                 String type = "default";
                 if(percent >= 50)
@@ -229,17 +232,26 @@ public class DBTimerCount {
                     type = "Yellow";
                 else if(percent <10)
                     type = "Blue";
+
                 pvo.setType(type);
                 pvo.setDate(getDateStr());
                 pvo.setPercent(percent + "");
                 pvo.setsTime(times.get(i).getSdate());
                 pvo.seteTime(times.get(i).getEdate());
 
+
+                Log.i("DBTIMERCOUNT", pvo.toString());
+
                 PhoneVO equal = phonedbHelper.getEqual(user.getUid(), getDateStr(), pvo);
+
+                Log.i("DBTIMERCOUNT2", pvo.toString());
+
                 if(equal == null){
+
                     phonedbHelper.insert(user.getUid(), getDateStr(), pvo);
 
                 }else{
+
                     phonedbHelper.update(user.getUid(), getDateStr(), pvo);
                 }
 
@@ -280,6 +292,7 @@ public class DBTimerCount {
         Calendar cal = Calendar.getInstance();
 
         int d = cal.get(Calendar.DAY_OF_WEEK);
+        Log.i("sy2399_timetable",""+ d);
         switch (d){
             case(1):
                 day = "sun";
