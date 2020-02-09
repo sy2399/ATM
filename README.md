@@ -11,14 +11,15 @@
 
 ### 2-1. Activity History
 
-![activity_screenshot](https://user-images.githubusercontent.com/25919167/74100652-c6b10180-4b74-11ea-981f-1116a46f4bca.jpeg){ width=50%}
+#### ![activity_history](https://user-images.githubusercontent.com/25919167/74100652-c6b10180-4b74-11ea-981f-1116a46f4bca.jpeg)
 
 
 ### 2-2. App usage in Class History
 
-<img src="https://user-images.githubusercontent.com/25919167/74100524-6b324400-4b73-11ea-8074-c1e72bfdf5c6.jpeg" width="50%" height="50%>
+ 
+#### ![class_app usage history](https://user-images.githubusercontent.com/25919167/74100673-eb0cde00-4b74-11ea-993b-38fb6ddacfb3.jpeg)
 
 ### 2-3. App usage overall in Day History
 
-<img src="https://user-images.githubusercontent.com/25919167/74100525-6cfc0780-4b73-11ea-8472-a2361cfd422c.jpeg" width="50%" height="50%>
+#### ![history_screenshot](https://user-images.githubusercontent.com/25919167/74100674-ecd6a180-4b74-11ea-9926-3ffe96dfc33f.jpeg)
 
