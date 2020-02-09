@@ -11,7 +11,8 @@
 
 ### 2-1. Activity History
 
-<img src="https://user-images.githubusercontent.com/25919167/74100521-679ebd00-4b73-11ea-9726-b9bd32c2fb75.jpeg" width="50%" height="50%>
+![activity_screenshot](https://user-images.githubusercontent.com/25919167/74100652-c6b10180-4b74-11ea-981f-1116a46f4bca.jpeg){ width=50%}
+
 
 ### 2-2. App usage in Class History
 
