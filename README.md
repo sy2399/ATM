@@ -5,7 +5,7 @@
 ## 1. Smartphone Passive Sensing
   - Activity : Google Fit
   - Location : GPS latitude, longitude
-  - App Usage : Appa package, start & end time
+  - App Usage : App package name, start & end time
   - Notification
   
 ## 2. Visualization
