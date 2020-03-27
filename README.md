@@ -10,9 +10,4 @@
   
 ## 2. Visualization
 
-### 2-1. History of Activity 
-
-### 2-2. History of App usage in Class 
-
-### 2-3. History of App usage in Day 
-
+![DP_ATM_capture](https://user-images.githubusercontent.com/25919167/77718491-6d1e6c80-7026-11ea-8465-e0d479f1e887.png)
