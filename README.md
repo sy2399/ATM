@@ -7,7 +7,10 @@
   - Location : GPS latitude, longitude
   - App Usage : App package name, start & end time
   - Notification
-  
-## 2. Visualization
+ 
+## 2. Storyboard
+![storyboard](https://user-images.githubusercontent.com/25919167/77840743-b3f69880-71c5-11ea-9565-0ffbfa5d18b3.png)
+
+## 3. Visualization
 
 ![DP_ATM_capture](https://user-images.githubusercontent.com/25919167/77718491-6d1e6c80-7026-11ea-8465-e0d479f1e887.png)
