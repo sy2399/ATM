@@ -1,6 +1,6 @@
 # Digital Phenotype Final Ver.
 - Smartphone Passive Sensing & Visualization
-- Paper : Kim, B., Rhim, S., Han, K., & Lee, S.W. (2018). Leveraging Mobile Technology to Support Goal Setting and Strategies of College Students. International Joint Conference and 2018 International Symposium on Pervasive and Ubiquitous Computing and Wearable Computers, ACM.   
+- [Paper](https://dl.acm.org/doi/abs/10.1145/3267305.3267653) : Kim, B., Rhim, S., Han, K., & Lee, S.W. (2018). Leveraging Mobile Technology to Support Goal Setting and Strategies of College Students. International Joint Conference and 2018 International Symposium on Pervasive and Ubiquitous Computing and Wearable Computers, ACM.   
 
 ## 1. Smartphone Passive Sensing
   - Activity : Google Fit 
